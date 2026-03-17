@@ -100,8 +100,8 @@ button{font-family:inherit;cursor:pointer}
 <body>
 
 <div class="header">
-  <div class="logo-row"><div class="logo">S</div><div><div class="title">Mills Act Tax Calculator</div><div class="subtitle">STELLA × CA Rev & Tax Code §439-439.4</div></div></div>
-  <div class="meta">Comprehensive real estate scenario planner · Relevant to 2026 tax & STR laws · Leveraging income capitalization method  · with Palm Springs defaults</div>
+  <div class="logo-row"><div class="logo">S</div><div><div class="title">Stella | The Badass Bitch Accountant</div><div class="subtitle"> × CA Rev & Tax Code §439-439.4</div></div></div>
+  <div class="meta">Comprehensive real estate scenario planner · Relevant to 2026 tax & STR laws · Leveraging income capitalization method · with Palm Springs defaults</div>
   <div class="tabs" id="tabs"></div>
 </div>
 
