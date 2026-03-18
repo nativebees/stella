@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stella | The Badass Bitch Accountant</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💲</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0B0F19;--surface:#111827;--border:#1F2937;--border2:#374151;--text:#E5E7EB;--muted:#9CA3AF;--dim:#6B7280;--gold:#D4A054;--green:#10B981;--red:#EF4444;--blue:#3B82F6;--purple:#8B5CF6;--orange:#F59E0B;--teal:#14B8A6}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--surface)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.header{background:linear-gradient(135deg,#111827,#1a1a2e);border-bottom:1px solid #D4A05440;padding:20px 24px 0}
+.logo-row{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.avatar{width:42px;height:42px;border-radius:10px;object-fit:cover;border:2px solid var(--gold)}
+.avatar-fallback{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#D4A054,#B8860B);font-size:20px;font-weight:700;font-family:'Space Mono',monospace;color:#111827;border:2px solid var(--gold)}
+.title{font-size:17px;font-weight:700;letter-spacing:-0.02em}
+.subtitle{font-size:10px;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:0.04em}
+.meta{font-size:10px;color:var(--dim);margin-top:8px}
+.mode-bar{display:flex;gap:8px;margin-top:14px;padding:10px 0}
+.mode-btn{flex:1;padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--dim);font-size:11px;font-family:'Space Mono',monospace;transition:all .25s;text-align:center;line-height:1.4}
+.mode-btn .mi{font-size:18px;display:block;margin-bottom:2px}.mode-btn .ml{font-weight:700;display:block}.mode-btn .ms{font-size:9px;font-weight:400;opacity:.7;display:block}
+.mode-btn.a-owner{background:#10B98115;border-color:#10B98150;color:var(--green)}
+.mode-btn.a-ltr{background:#3B82F615;border-color:#3B82F650;color:var(--blue)}
+.mode-btn.a-str{background:#D4A05415;border-color:#D4A05450;color:var(--gold)}
+.tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tab{padding:8px 14px;font-size:11px;font-family:'Space Mono',monospace;background:transparent;color:var(--dim);border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;transition:all .2s;font-weight:400}
+.tab.active{background:#D4A05420;color:var(--gold);border-color:#D4A05440;font-weight:700}
+.content{padding:20px 24px;max-width:1200px;margin:0 auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g6{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:24px}
+.p{background:var(--surface);border-radius:10px;padding:16px;border:1px solid var(--border)}
+.p-gold{border-color:#D4A05430}.p-blue{border-color:#3B82F630}.p-purple{border-color:#8B5CF630}.p-green{border-color:#10B98130}.p-teal{border-color:#14B8A630}
+.cp{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:20px 20px 12px;margin-bottom:24px}
+.st{border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.st-l{font-size:9px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.st-v{font-size:20px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:-.02em}
+.st-s{font-size:9px;color:var(--dim)}
+.st-gold{background:#D4A05410;border:1px solid #D4A05440}.st-gold .st-v{color:var(--gold)}
+.st-green{background:#10B98110;border:1px solid #10B98140}.st-green .st-v{color:var(--green)}
+.st-red{background:#EF444410;border:1px solid #EF444440}.st-red .st-v{color:var(--red)}
+.st-blue{background:#3B82F610;border:1px solid #3B82F640}.st-blue .st-v{color:var(--blue)}
+.st-neutral{background:#374151;border:1px solid #4B5563}.st-neutral .st-v{color:var(--text)}
+.st-orange{background:#F59E0B10;border:1px solid #F59E0B40}.st-orange .st-v{color:var(--orange)}
+.st-purple{background:#8B5CF610;border:1px solid #8B5CF640}.st-purple .st-v{color:var(--purple)}
+.st-teal{background:#14B8A610;border:1px solid #14B8A640}.st-teal .st-v{color:var(--teal)}
+.sec{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.sec span{font-size:16px}
+.sg{margin-bottom:16px}.sh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.sl{font-size:12px;color:var(--muted);letter-spacing:.02em}.sv{font-size:14px;font-family:'Space Mono',monospace;font-weight:700}
+.ss{font-size:10px;color:var(--dim);margin-bottom:4px}
+.sk{position:relative;height:6px;border-radius:3px;background:var(--border)}
+.sf{position:absolute;height:100%;border-radius:3px;transition:width .1s}
+.sth{position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--surface);transition:left .1s;pointer-events:none}
+.si{position:absolute;top:-6px;left:0;width:100%;height:18px;opacity:0;cursor:pointer;-webkit-appearance:none}
+.tr{display:flex;border-radius:6px;overflow:hidden;border:1px solid var(--border2);margin-bottom:16px}
+.tb{flex:1;padding:6px 12px;font-size:11px;font-family:'Space Mono',monospace;border:none;transition:all .2s}
+.tb.ac{background:var(--gold);color:#111827;font-weight:700}.tb:not(.ac){background:var(--surface);color:var(--dim)}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #1F293766}
+.ir.ind{padding-left:16px}.ir .la{font-size:12px;color:var(--muted)}.ir.ind .la{color:var(--dim)}
+.ir .va{font-size:13px;font-family:'Space Mono',monospace}
+.ir .va.gold{color:var(--gold);font-weight:700}.ir .va.green{color:var(--green);font-weight:700}
+.ir .va.red{color:var(--red);font-weight:700}.ir .va.blue{color:var(--blue);font-weight:700}
+.ir .va.purple{color:var(--purple);font-weight:700}.ir .va.teal{color:var(--teal);font-weight:700}
+.ir .va.orange{color:var(--orange);font-weight:700}
+.hl{border-radius:6px;padding:10px;margin-top:8px}
+.hl-gold{background:#D4A05410;border:1px solid #D4A05430}
+.hl-green{background:#10B98110;border:1px solid #10B98130}
+.hl-blue{background:#3B82F610;border:1px solid #3B82F630}
+.hl-purple{background:#8B5CF610;border:1px solid #8B5CF630}
+.hl-teal{background:#14B8A610;border:1px solid #14B8A630}
+.hl-red{background:#EF444410;border:1px solid #EF444430}
+.vb{border-radius:10px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.vi{font-size:28px;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vt{font-size:15px;font-weight:700}.vs2{font-size:11px;color:var(--muted);margin-top:2px}
+.ssg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ssc{border-radius:8px;padding:12px}.sst{font-size:11px;font-weight:700;margin-bottom:8px;font-family:'Space Mono',monospace}
+.ssb{font-size:10px;color:var(--muted);line-height:1.6}
+.footer{margin-top:28px;padding:14px 0;border-top:1px solid var(--border);font-size:9px;color:#4B5563;font-family:'Space Mono',monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.note{font-size:10px;color:var(--dim);line-height:1.6;margin-top:6px}
+.sp{height:8px}.dv{height:6px;border-bottom:2px solid var(--border2)}.hidden{display:none}
+.mt{display:inline-block;font-size:9px;font-family:'Space Mono',monospace;padding:2px 8px;border-radius:4px;font-weight:700;letter-spacing:.04em;margin-left:8px}
+.mt-owner{background:#10B98120;color:var(--green)}.mt-ltr{background:#3B82F620;color:var(--blue)}.mt-str{background:#D4A05420;color:var(--gold)}
+.reps-badge{display:inline-block;font-size:9px;font-family:'Space Mono',monospace;padding:2px 8px;border-radius:4px;font-weight:700;letter-spacing:.04em}
+.reps-on{background:#14B8A620;color:var(--teal)}.reps-off{background:#EF444420;color:var(--red)}
+.computed{font-size:13px;font-family:'Space Mono',monospace;color:var(--teal);font-weight:700;padding:8px 0}
+.caveat{font-size:9px;color:var(--dim);font-style:italic;line-height:1.5;margin-top:6px;padding:8px;background:#1F293744;border-radius:4px}
+@media(max-width:768px){.g2,.g3{grid-template-columns:1fr}.mode-bar{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo-row">
+    <img class="avatar" id="avi" src="stella.png" alt="S" onerror="this.style.display='none';document.getElementById('avifb').style.display='flex';">
+    <div class="avatar-fallback" id="avifb" style="display:none">S</div>
+    <div><div class="title">Stella | The Badass Bitch Accountant</div><div class="subtitle">Real Estate Scenario Planner for Pedantic Nutjobs</div></div>
+  </div>
+  <div class="meta">Tools: Mills Act · MACRS Depreciation · Cost Segregation · Bonus Dep · REPS · Passive Loss · EBL &nbsp;|&nbsp; Tax Code: RTC §439 · IRC §168(k) · §469(c)(7) · §461(l) · OBBBA P.L. 119-21</div>
+  <div class="mode-bar" id="modes"></div>
+  <div class="tabs" id="tabs"></div>
+</div>
+<div class="content">
+  <div id="t-dash"></div><div id="t-mills" class="hidden"></div><div id="t-rev" class="hidden"></div>
+  <div id="t-costs" class="hidden"></div><div id="t-tax" class="hidden"></div><div id="t-analysis" class="hidden"></div>
+  <div class="footer"><span>Stella v3.0 · Not tax advice · Consult your CPA</span><span>CA RTC §439 · IRC §168(k) · §469(c)(7) · §461(l) · OBBBA P.L. 119-21</span></div>
+</div>
+<script>
+var S={
+  mode:"str",purchasePrice:845000,marketValue:870000,propTaxRate:1.25,
+  interestComp:6.50,riskOverride:null,propTaxComp:1.10,remainingLife:50,improvementRatio:70,
+  monthlyFairRent:4200,vacancyRate:5,monthlyOpEx:500,
+  ltrMonthlyRent:4200,ltrVacancy:5,ltrMgmtPct:8,
+  nightlyRate:250,strOccupancy:65,totRate:12.5,strMgmtPct:20,
+  loanAmount:750000,loanRate:6.625,loanTerm:30,monthlyPMI:200,
+  monthlyInsurance:250,monthlyUtilities:1000,monthlyLawn:200,monthlyPool:200,monthlyMaint:300,
+  fedRate:35,stateRate:9.3,appreciationRate:4,projYears:10,
+  repsEnabled:false,costSegPct:25,personalPropValue:25000,bonusDepRate:100,
+  tab:"dash"
+};
+var fmt=function(n){return n.toLocaleString("en-US",{maximumFractionDigits:0});};
+var fmtD=function(n){return "$"+fmt(n);};
+var fmtP=function(n){return n.toFixed(2)+"%";};
+var mc={owner:"#10B981",ltr:"#3B82F6",str:"#D4A054"};
+var ml={owner:"Owner Occupied",ltr:"Long-Term Rental",str:"Short-Term Rental"};
+
+function calc(){
+  // Loan
+  var r=S.loanRate/100/12,n=S.loanTerm*12;
+  var mpi=r>0?S.loanAmount*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1):S.loanAmount/n;
+  var bal=S.loanAmount,yr1Int=0;
+  for(var m=0;m<12;m++){var mi=bal*r;yr1Int+=mi;bal-=(mpi-mi);}
+  var totalMoMtg=mpi+S.monthlyPMI;
+
+  // Mills Act
+  var gai=S.monthlyFairRent*12,vd=gai*(S.vacancyRate/100),aoe=S.monthlyOpEx*12,noi=gai-vd-aoe;
+  var riskAuto=S.mode==="owner"?4:2,rc=S.riskOverride!==null?S.riskOverride:riskAuto;
+  var ac=(1/S.remainingLife)*(S.improvementRatio/100)*100;
+  var tcr=S.interestComp+rc+S.propTaxComp+ac,rv=noi/(tcr/100);
+  var av=S.purchasePrice,ev=Math.min(rv,av,S.marketValue);
+  var sat=av*(S.propTaxRate/100),mat=ev*(S.propTaxRate/100),sav=sat-mat;
+  var sp=sat>0?(sav/sat)*100:0;
+
+  // Revenue
+  var revGross=0,revDed=0,revNet=0,revNights=0;
+  if(S.mode==="ltr"){revGross=S.ltrMonthlyRent*12;var lv=revGross*(S.ltrVacancy/100);var lm=(revGross-lv)*(S.ltrMgmtPct/100);revDed=lv+lm;revNet=revGross-revDed;}
+  else if(S.mode==="str"){revNights=Math.round(365*(S.strOccupancy/100));revGross=S.nightlyRate*(S.strOccupancy/100)*365;var tot=revGross*(S.totRate/100);var sm=(revGross-tot)*(S.strMgmtPct/100);revDed=tot+sm;revNet=revGross-revDed;}
+
+  // Cost of Ownership (cash flow)
+  var mpt=mat/12;
+  var tmc=totalMoMtg+S.monthlyInsurance+S.monthlyUtilities+S.monthlyLawn+S.monthlyPool+S.monthlyMaint+mpt;
+  var tac=tmc*12;
+  var tmcs=(totalMoMtg+S.monthlyInsurance+S.monthlyUtilities+S.monthlyLawn+S.monthlyPool+S.monthlyMaint+sat/12)*1;
+  // fix: without mills
+  tmcs=totalMoMtg+S.monthlyInsurance+S.monthlyUtilities+S.monthlyLawn+S.monthlyPool+S.monthlyMaint+sat/12;
+  var tacs=tmcs*12;
+
+  // Cash flow net
+  var cfNet=revNet-tac;
+  var cfNetNoMills=revNet-tacs;
+  var netPos=cfNet+sav;
+
+  // Depreciation
+  var depBasis=S.purchasePrice*(S.improvementRatio/100);
+  var csBasis=depBasis*(S.costSegPct/100);
+  var structBasis=depBasis-csBasis;
+  var annStructDep=structBasis/27.5;
+  var yr1BonusCS=csBasis*(S.bonusDepRate/100);
+  var yr1BonusPP=S.personalPropValue*(S.bonusDepRate/100);
+  var yr1TotalDep=annStructDep+yr1BonusCS+yr1BonusPP;
+  var ongoingDep=annStructDep;
+
+  // Dep tax savings (structure: fed+state; bonus: fed only due to CA non-conformity)
+  var combinedRate=(S.fedRate+S.stateRate)/100;
+  var depTaxStruct=annStructDep*combinedRate;
+  var depTaxBonusFed=(yr1BonusCS+yr1BonusPP)*(S.fedRate/100);
+  var yr1DepTax=depTaxStruct+depTaxBonusFed;
+  var ongoingDepTax=depTaxStruct;
+
+  // Mortgage interest tax savings
+  var intDed=S.mode==="owner"?yr1Int*Math.min(S.loanAmount,750000)/Math.max(S.loanAmount,1):yr1Int;
+  var intTaxRate=S.mode==="owner"?combinedRate:combinedRate;
+  var intTaxSav=intDed*intTaxRate;
+
+  // Schedule E / Tax analysis (rental modes only)
+  var opExAnnual=(S.monthlyInsurance+S.monthlyUtilities+S.monthlyLawn+S.monthlyPool+S.monthlyMaint)*12;
+  var schedEDed=yr1Int+mat+opExAnnual+yr1TotalDep;
+  var schedEInc=S.mode==="owner"?0:revNet;
+  var schedENet=schedEInc-schedEDed;
+  var rentalLoss=Math.max(0,-schedENet);
+  var rentalProfit=Math.max(0,schedENet);
+
+  // REPS + Passive Loss
+  var eblLimit=305000; // 2026 MFJ
+  var usableLoss=0,suspLoss=0,eblExcess=0,w2Offset=0;
+  if(S.mode!=="owner"&&rentalLoss>0){
+    if(S.repsEnabled){
+      usableLoss=Math.min(rentalLoss,eblLimit);
+      eblExcess=Math.max(0,rentalLoss-eblLimit);
+      suspLoss=0;
+      w2Offset=usableLoss*combinedRate;
+    } else {
+      usableLoss=0;suspLoss=rentalLoss;eblExcess=0;w2Offset=0;
+    }
+  }
+
+  // Owner-occupied: interest deduction via Schedule A (if itemizing)
+  var ownerIntBenefit=S.mode==="owner"?intTaxSav:0;
+
+  // Total tax benefit year 1
+  var totalTaxBenefitYr1=sav; // Mills Act savings always
+  if(S.mode!=="owner"){totalTaxBenefitYr1+=w2Offset;} // REPS offset
+  else{totalTaxBenefitYr1+=ownerIntBenefit;} // Owner interest deduction
+
+  // 30-year projection (sliced to S.projYears for chart)
+  var yd=[];
+  var cumCashFlow=0,cumTaxBen=0,cumCashFlowNoMills=0;
+  var assetVal=S.marketValue,mortBal=S.loanAmount;
+  var r_mo=S.loanRate/100/12,n_mo=S.loanTerm*12;
+  var moP=r_mo>0?S.loanAmount*(r_mo*Math.pow(1+r_mo,n_mo))/(Math.pow(1+r_mo,n_mo)-1):S.loanAmount/n_mo;
+  for(var y=1;y<=30;y++){
+    cumCashFlow+=cfNet;cumCashFlowNoMills+=cfNetNoMills;
+    var dty=y===1?yr1DepTax:ongoingDepTax;
+    var tty=sav+intTaxSav+dty+(S.repsEnabled&&rentalLoss>0?w2Offset:0);
+    cumTaxBen+=tty;
+    assetVal=assetVal*(1+S.appreciationRate/100);
+    var yrP=0;
+    for(var mo=0;mo<12;mo++){if(mortBal<=0){mortBal=0;break;}var mi2=mortBal*r_mo;var mp2=Math.min(moP-mi2,mortBal);mortBal-=mp2;yrP+=mp2;}
+    var neq=assetVal-Math.max(0,mortBal);
+    var tw=neq+cumCashFlow+cumTaxBen;
+    var twn=(assetVal-Math.max(0,mortBal))+cumCashFlowNoMills;
+    yd.push({year:y,cashFlow:Math.round(cumCashFlow),taxBen:Math.round(cumTaxBen),
+      assetVal:Math.round(assetVal),mortBal:Math.round(Math.max(0,mortBal)),
+      netEquity:Math.round(neq),totalWealth:Math.round(tw),totalWealthNoMills:Math.round(twn),
+      wm:Math.round(cumCashFlow),wom:Math.round(cumCashFlowNoMills),so:Math.round(cumTaxBen)});
+  }
+
+  var benr=S.mode==="str"?tac/(365*(S.strOccupancy/100)*(1-S.totRate/100)*(1-S.strMgmtPct/100)):0;
+  var benLtr=S.mode==="ltr"?tac/12/(1-S.ltrVacancy/100)/(1-S.ltrMgmtPct/100):0;
+
+  // Appreciation & Equity Paydown (the 5 pillars)
+  var annAppreciation=S.marketValue*(S.appreciationRate/100);
+  var yr1Principal=(mpi*12)-yr1Int;
+  var totalTaxBen=sav+intTaxSav+yr1DepTax+(S.repsEnabled?w2Offset:0);
+  var totalReturn=netPos+annAppreciation+yr1Principal+totalTaxBen;
+
+  // 5-level viability (Cash Flow > Wealth Builder > Tax Play > Appreciation Hold > Reassess)
+  var vLevel,vLabel,vIcon,vColor,vDesc;
+  if(netPos>=0){
+    vLevel=5;vLabel='Cash Flow Positive';vIcon='💰';vColor='#10B981';
+    vDesc='Revenue covers all costs and generates income. The gold standard.';
+  } else if(netPos+totalTaxBen>=0){
+    vLevel=4;vLabel='Tax Advantage Play';vIcon='⚡';vColor='#14B8A6';
+    vDesc='Cash flow negative, but tax benefits (Mills Act + depreciation'+(S.repsEnabled?' + REPS':'')+') more than offset the shortfall.';
+  } else if(netPos+totalTaxBen+annAppreciation+yr1Principal>=0){
+    vLevel=3;vLabel='Wealth Builder';vIcon='📈';vColor='#3B82F6';
+    vDesc='Appreciation + equity paydown + tax benefits create positive total return despite cash outflow.';
+  } else if(annAppreciation+yr1Principal>Math.abs(netPos)*0.5){
+    vLevel=2;vLabel='Appreciation Hold';vIcon='🏠';vColor='#F59E0B';
+    vDesc='Running at a loss, but appreciation and equity buildup recover over 50% of the gap. Viable if you can fund the shortfall.';
+  } else {
+    vLevel=1;vLabel='Reassess Strategy';vIcon='⚠';vColor='#EF4444';
+    vDesc='Total return is negative even with appreciation. Adjust pricing, reduce costs, or reconsider the approach.';
+  }
+
+  return {mpi:mpi,totalMoMtg:totalMoMtg,yr1Int:yr1Int,
+    gai:gai,vd:vd,aoe:aoe,noi:noi,rc:rc,riskAuto:riskAuto,ac:ac,tcr:tcr,rv:rv,av:av,ev:ev,sat:sat,mat:mat,sav:sav,sp:sp,
+    revGross:revGross,revDed:revDed,revNet:revNet,revNights:revNights,
+    mpt:mpt,tmc:tmc,tac:tac,tmcs:tmcs,tacs:tacs,cfNet:cfNet,cfNetNoMills:cfNetNoMills,netPos:netPos,
+    depBasis:depBasis,csBasis:csBasis,structBasis:structBasis,annStructDep:annStructDep,
+    yr1BonusCS:yr1BonusCS,yr1BonusPP:yr1BonusPP,yr1TotalDep:yr1TotalDep,ongoingDep:ongoingDep,
+    yr1DepTax:yr1DepTax,ongoingDepTax:ongoingDepTax,depTaxStruct:depTaxStruct,depTaxBonusFed:depTaxBonusFed,
+    intDed:intDed,intTaxSav:intTaxSav,
+    schedEDed:schedEDed,schedEInc:schedEInc,schedENet:schedENet,
+    rentalLoss:rentalLoss,rentalProfit:rentalProfit,
+    usableLoss:usableLoss,suspLoss:suspLoss,eblExcess:eblExcess,eblLimit:eblLimit,w2Offset:w2Offset,
+    totalTaxBenefitYr1:totalTaxBenefitYr1,
+    annAppreciation:annAppreciation,yr1Principal:yr1Principal,totalTaxBen:totalTaxBen,totalReturn:totalReturn,
+    vLevel:vLevel,vLabel:vLabel,vIcon:vIcon,vColor:vColor,vDesc:vDesc,
+    yd:yd,benr:benr,benLtr:benLtr};
+}
+
+// DOM
+function h(tag,attrs){var el=document.createElement(tag);if(attrs)Object.entries(attrs).forEach(function(kv){var k=kv[0],v=kv[1];if(k==='className')el.className=v;else if(k==='onclick')el.onclick=v;else if(k.startsWith('data'))el.setAttribute(k,v);else if(k==='innerHTML')el.innerHTML=v;else el[k]=v;});for(var i=2;i<arguments.length;i++){var c=arguments[i];if(c==null)continue;if(Array.isArray(c))c.forEach(function(x){if(x)el.append(typeof x==='string'?document.createTextNode(x):x);});else el.append(typeof c==='string'?document.createTextNode(c):c);}return el;}
+
+function slider(id,label,key,min,max,step,format,sub,color){
+  var clr=color||'#D4A054';
+  var g=h('div',{className:'sg'});
+  g.append(h('div',{className:'sh'},h('span',{className:'sl'},label),h('span',{className:'sv',id:'sv-'+id,style:'color:'+clr})));
+  if(sub)g.append(h('div',{className:'ss'},sub));
+  var tk=h('div',{className:'sk'});
+  tk.append(h('div',{className:'sf',id:'sf-'+id,style:'background:linear-gradient(90deg,'+clr+'44,'+clr+')'}),
+    h('input',{type:'range',className:'si',min:min,max:max,step:step,value:S[key],oninput:function(e){S[key]=Number(e.target.value);update();}}),
+    h('div',{className:'sth',id:'st-'+id,style:'background:'+clr}));
+  g.append(tk);return g;
+}
+function usl(id,key,min,max,format){
+  var v=S[key],pct=((v-min)/(max-min))*100;
+  var d=format==='dollar'?fmtD(v):format==='percent'?fmtP(v):format==='years'?v+' yrs':format==='nights'?'$'+v+'/night':format==='pctInt'?v+'%':''+v;
+  var e=document.getElementById('sv-'+id);if(e)e.textContent=d;
+  e=document.getElementById('sf-'+id);if(e)e.style.width=pct+'%';
+  e=document.getElementById('st-'+id);if(e)e.style.left='calc('+pct+'% - 6px)';
+}
+function IR(l,v,hl,ind){return h('div',{className:'ir'+(ind?' ind':'')},h('span',{className:'la'},l),h('span',{className:'va'+(hl?' '+hl:'')},v));}
+function SC(l,v,s,vr,ic){return h('div',{className:'st st-'+vr},h('div',{className:'st-l'},(ic||'')+' '+l),h('div',{className:'st-v'},v),s?h('div',{className:'st-s'},s):null);}
+function ST(e,t){return h('div',{className:'sec'},h('span',null,e),t);}
+function MT(){return h('span',{className:'mt mt-'+S.mode},ml[S.mode]);}
+function RB(){return h('span',{className:'reps-badge '+(S.repsEnabled?'reps-on':'reps-off')},S.repsEnabled?'REPS ON':'REPS OFF');}
+
+// Charts
+var ch1=null,ch2=null;
+function renderArea(c){var x=document.getElementById('ch-area');if(!x)return;if(ch1)ch1.destroy();
+  var data=c.yd.slice(0,S.projYears);var clr=mc[S.mode];
+  ch1=new Chart(x,{type:'line',data:{labels:data.map(function(d){return 'Y'+d.year;}),datasets:[
+    {label:'Total Wealth (w/ Mills)',data:data.map(function(d){return d.totalWealth;}),borderColor:clr,backgroundColor:clr+'20',fill:false,tension:.3,borderWidth:2.5,pointRadius:0},
+    {label:'Total Wealth (no Mills)',data:data.map(function(d){return d.totalWealthNoMills;}),borderColor:'#EF4444',backgroundColor:'#EF444410',fill:false,tension:.3,borderWidth:1.5,borderDash:[5,5],pointRadius:0},
+    {label:'Net Equity (Asset - Mortgage)',data:data.map(function(d){return d.netEquity;}),borderColor:'#3B82F6',backgroundColor:'#3B82F620',fill:true,tension:.3,borderWidth:1.5,pointRadius:0},
+    {label:'Cumulative Tax Benefits',data:data.map(function(d){return d.taxBen;}),borderColor:'#14B8A6',backgroundColor:'#14B8A615',fill:true,tension:.3,borderWidth:1,pointRadius:0},
+    {label:'Cumulative Cash Flow',data:data.map(function(d){return d.cashFlow;}),borderColor:'#D4A054',backgroundColor:'#D4A05415',fill:true,tension:.3,borderWidth:1,borderDash:[3,3],pointRadius:0}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#9CA3AF',font:{family:'Space Mono',size:9},boxWidth:12,padding:8}},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#E5E7EB',borderColor:'#374151',borderWidth:1,bodyFont:{family:'Space Mono',size:10},callbacks:{label:function(ctx){return ctx.dataset.label+': '+fmtD(ctx.raw);}}}},scales:{x:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:9},maxTicksLimit:S.projYears<=10?10:S.projYears<=20?10:15},grid:{color:'#1F2937'}},y:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:9},callback:function(v){return v>=1000000||v<=-1000000?'$'+(v/1000000).toFixed(1)+'M':'$'+(v/1000).toFixed(0)+'k';}},grid:{color:'#1F2937'}}}}});}
+function renderBar(c){var x=document.getElementById('ch-bar');if(!x)return;if(ch2)ch2.destroy();
+ch2=new Chart(x,{type:'bar',data:{labels:['Revenue','Tax Savings','Total Costs','Net Position'],datasets:[
+{label:'With Mills Act',data:[Math.round(c.revNet),Math.round(c.sav),-Math.round(c.tac),Math.round(c.netPos)],backgroundColor:mc[S.mode],borderRadius:3},
+{label:'Without Mills Act',data:[Math.round(c.revNet),0,-Math.round(c.tacs),Math.round(c.cfNetNoMills)],backgroundColor:'#EF444499',borderRadius:3}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9CA3AF',font:{family:'Space Mono',size:10}}},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#E5E7EB',borderColor:'#374151',borderWidth:1,bodyFont:{family:'Space Mono',size:11},callbacks:{label:function(x){return x.dataset.label+': '+fmtD(x.raw);}}}},scales:{x:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:9}},grid:{color:'#1F2937'}},y:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:9},callback:function(v){return '$'+(v/1000).toFixed(0)+'k';}},grid:{color:'#1F2937'}}}}});}
+
+// Tabs + Modes
+var MODES=[{id:'owner',icon:'🏠',l:'Owner Occupied',s:'No rental income'},{id:'ltr',icon:'📋',l:'Long-Term Rental',s:'28+ day leases'},{id:'str',icon:'✨',l:'Short-Term Rental',s:'<28 day stays'}];
+var TABS=[{id:'dash',l:'Dashboard',i:'◈'},{id:'mills',l:'Mills Act',i:'§'},{id:'rev',l:'Revenue',i:'$'},{id:'costs',l:'Costs',i:'⚙'},{id:'tax',l:'Tax Strategy',i:'⚡'},{id:'analysis',l:'Analysis',i:'◉'}];
+
+function initModes(){var b=document.getElementById('modes');MODES.forEach(function(m){var btn=h('button',{className:'mode-btn'+(S.mode===m.id?' a-'+m.id:''),onclick:function(){S.mode=m.id;S.riskOverride=null;rebuildAll();},innerHTML:'<span class="mi">'+m.icon+'</span><span class="ml">'+m.l+'</span><span class="ms">'+m.s+'</span>'});btn.dataset.mode=m.id;b.append(btn);});}
+function initTabs(){var c=document.getElementById('tabs');TABS.forEach(function(t){var btn=h('button',{className:'tab'+(S.tab===t.id?' active':''),onclick:function(){S.tab=t.id;switchTab();}});btn.dataset.tab=t.id;btn.textContent=t.i+' '+t.l;c.append(btn);});}
+function switchTab(){document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===S.tab);});TABS.forEach(function(t){var e=document.getElementById('t-'+t.id);if(e)e.classList.toggle('hidden',t.id!==S.tab);});update();}
+function updateModes(){document.querySelectorAll('.mode-btn').forEach(function(b){b.className='mode-btn'+(S.mode===b.dataset.mode?' a-'+b.dataset.mode:'');});}
+
+// Build tabs
+function buildDash(){var e=document.getElementById('t-dash');e.innerHTML='';
+  // Year toggle
+  var ytRow=h('div',{style:'display:flex;gap:4px;margin-bottom:12px'});
+  [10,20,30].forEach(function(yr){
+    var btn=h('button',{className:'tb'+(S.projYears===yr?' ac':''),style:'padding:4px 14px;font-size:10px;border-radius:4px',
+      onclick:function(){S.projYears=yr;ytRow.querySelectorAll('.tb').forEach(function(b){b.classList.toggle('ac',parseInt(b.textContent)===yr);});update();}},yr+'yr');
+    ytRow.append(btn);
+  });
+  var chartPanel=h('div',{className:'cp'});
+  var chartHeader=h('div',{style:'display:flex;justify-content:space-between;align-items:center;margin-bottom:4px'});
+  chartHeader.append(h('div',{style:'font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase',id:'ch-title'},'Wealth Position Over Time'),ytRow);
+  chartPanel.append(chartHeader,h('div',{style:'font-size:10px;color:#6B7280;margin-bottom:16px',id:'ch-sub'}),h('div',{style:'position:relative;height:300px'},h('canvas',{id:'ch-area'})));
+  e.append(h('div',{className:'g6',id:'d-stats'}),chartPanel,h('div',{className:'g3',id:'d-sliders'}));
+  var clr=mc[S.mode],s1=h('div',{className:'p'});
+  if(S.mode==="str"){s1.append(slider('d-nr','Nightly Rate','nightlyRate',100,600,10,'nights',null,clr),slider('d-so','STR Occupancy','strOccupancy',30,95,1,'pctInt',null,'#3B82F6'));}
+  else if(S.mode==="ltr"){s1.append(slider('d-lr','Monthly LTR Rent','ltrMonthlyRent',1500,8000,100,'dollar',null,clr),slider('d-lv','LTR Vacancy','ltrVacancy',0,15,1,'pctInt',null,'#3B82F6'));}
+  else{s1.append(h('div',{style:'text-align:center;padding:20px 0;color:#6B7280;font-size:12px'},h('div',{style:'font-size:24px;margin-bottom:8px'},'🏠'),'Owner occupied mode'));}
+  document.getElementById('d-sliders').append(s1,
+    h('div',{className:'p'},slider('d-la','Loan Amount','loanAmount',100000,1500000,5000,'dollar',null,'#14B8A6'),slider('d-lr2','Interest Rate','loanRate',3,9,0.125,'percent',null,'#14B8A6')),
+    h('div',{className:'p'},slider('d-pp','Purchase Price','purchasePrice',200000,2000000,5000,'dollar',null,'#D4A054'),slider('d-ap','Appreciation Rate','appreciationRate',0,8,0.5,'pctInt','Palm Springs avg ~4%/yr','#F59E0B')));
+}
+
+function buildMills(){var e=document.getElementById('t-mills');e.innerHTML='';
+  var tl=h('div',{style:'font-size:12px;color:#9CA3AF;margin-bottom:6px'},'Risk Component (RTC §439.2)');
+  var tr=h('div',{className:'tr'});
+  [4,2].forEach(function(v){var l=v===4?'Owner-Occupied (4%)':'Rental (2%)';var cur=S.riskOverride!==null?S.riskOverride:(S.mode==="owner"?4:2);
+    tr.append(h('button',{className:'tb'+(cur===v?' ac':''),onclick:function(){S.riskOverride=v;update();tr.querySelectorAll('.tb').forEach(function(b,i){b.classList.toggle('ac',i===(v===4?0:1));});}},l));});
+  e.append(h('div',{className:'g2'},
+    h('div',null,h('div',{style:'margin-bottom:28px'},ST('⌂','Property'),slider('m-pp','Purchase Price','purchasePrice',200000,2000000,5000,'dollar','Prop 13 base'),slider('m-mv','Market Value','marketValue',200000,2000000,5000,'dollar'),slider('m-ptr','Property Tax Rate','propTaxRate',1.0,1.5,0.01,'percent','Palm Springs ~1.25%')),
+      h('div',{style:'margin-bottom:28px'},ST('§','Fair Market Rent (Assessor)'),slider('m-mfr','Monthly Fair Rent','monthlyFairRent',1500,8000,100,'dollar','Assessor LTR value for Mills Act','#10B981'),slider('m-vr','Vacancy Loss','vacancyRate',0,15,1,'pctInt',null,'#10B981'),slider('m-moe','Monthly OpEx','monthlyOpEx',100,1500,50,'dollar','Excludes debt, dep, prop tax','#10B981'))),
+    h('div',null,h('div',{style:'margin-bottom:28px'},ST('⚡','Cap Rate Components'),slider('m-ic','Interest Component','interestComp',2.5,8.0,0.25,'percent','2026 = 6.50% (SBE LTA 2025/030)'),tl,tr,slider('m-ptc','Prop Tax Component','propTaxComp',0.8,1.5,0.05,'percent'),slider('m-rl','Remaining Life','remainingLife',20,80,5,'years','Wexler ~50 yrs'),slider('m-ir','Improvement Ratio','improvementRatio',40,90,5,'pctInt','% improvements vs land')),h('div',{className:'p p-gold',id:'mills-ws'}))));
+}
+
+function buildRev(){var e=document.getElementById('t-rev');e.innerHTML='';var clr=mc[S.mode];
+  var left=h('div');
+  if(S.mode==="owner"){left.append(h('div',{className:'p p-green',style:'text-align:center;padding:40px 20px'},h('div',{style:'font-size:48px;margin-bottom:12px'},'🏠'),h('div',{style:'font-size:16px;font-weight:700;color:#10B981;margin-bottom:8px'},'Owner Occupied'),h('div',{style:'font-size:12px;color:#9CA3AF;line-height:1.6'},'No rental revenue. Mills Act savings reduce your cost of living.')));}
+  else if(S.mode==="ltr"){left.append(h('div',{style:'margin-bottom:28px'},ST('📋','Long-Term Rental (28+ Days)'),slider('r-lr','Monthly Rent','ltrMonthlyRent',1500,8000,100,'dollar',null,clr),slider('r-lv','Vacancy Rate','ltrVacancy',0,15,1,'pctInt',null,clr),slider('r-lm','Mgmt Fee','ltrMgmtPct',0,15,1,'pctInt','0% if self-managed',clr)));}
+  else{left.append(h('div',{style:'margin-bottom:28px'},ST('✨','Short-Term Rental (<28 Days)'),slider('r-nr','Nightly Rate','nightlyRate',100,600,10,'nights',null,clr),slider('r-so','Occupancy','strOccupancy',30,95,1,'pctInt','PS avg ~55-70%',clr),slider('r-tr','TOT + TBID','totRate',10,15,0.5,'percent','11.5% + 1% = 12.5%','#EF4444'),slider('r-sm','Mgmt/Platform Fee','strMgmtPct',0,30,1,'pctInt','Airbnb ~3-15%, PM ~15-25%',clr)));}
+  e.append(h('div',{className:'g2'},left,h('div',null,h('div',{className:'p',id:'rev-bd'}))));
+}
+
+function buildCosts(){var e=document.getElementById('t-costs');e.innerHTML='';
+  e.append(h('div',{className:'g2'},
+    h('div',null,
+      h('div',{style:'margin-bottom:28px'},ST('🏦','Loan Details'),slider('c-la','Loan Amount','loanAmount',100000,1500000,5000,'dollar',null,'#14B8A6'),slider('c-lr','Interest Rate','loanRate',3,9,0.125,'percent',null,'#14B8A6'),slider('c-lt','Loan Term','loanTerm',10,30,5,'years',null,'#14B8A6'),slider('c-pmi','Monthly PMI','monthlyPMI',0,500,25,'dollar','$0 when >20% equity','#14B8A6'),h('div',{className:'p p-teal',id:'loan-calc'})),
+      h('div',{style:'margin-bottom:28px'},ST('🛡','Insurance'),slider('c-mi','Monthly Insurance','monthlyInsurance',100,800,25,'dollar'))),
+    h('div',null,
+      h('div',{style:'margin-bottom:28px'},ST('⚡','Operating Expenses'),slider('c-mu','Utilities','monthlyUtilities',200,2000,50,'dollar','Electric/Gas/Water/Trash','#10B981'),slider('c-ml','Lawn','monthlyLawn',0,500,25,'dollar',null,'#10B981'),slider('c-mp','Pool','monthlyPool',0,500,25,'dollar',null,'#10B981'),slider('c-mm','Maintenance','monthlyMaint',0,1000,50,'dollar','Upkeep, repairs, turnover','#10B981')),
+      h('div',{style:'margin-bottom:28px'},ST('⊘','Tax Bracket'),slider('c-fr','Federal Rate','fedRate',10,37,1,'pctInt',null,'#8B5CF6'),slider('c-sr','CA State Rate','stateRate',0,13.3,0.1,'percent',null,'#8B5CF6')),
+      h('div',{className:'p',id:'cost-tco'}))));
+}
+
+function buildTax(){var e=document.getElementById('t-tax');e.innerHTML='';
+  // REPS toggle
+  var repsRow=h('div',{className:'tr',style:'margin-bottom:8px'});
+  ['on','off'].forEach(function(v){var isOn=v==='on';var act=(S.repsEnabled===isOn);
+    repsRow.append(h('button',{className:'tb'+(act?' ac':''),style:act?(isOn?'background:#14B8A6':'background:#EF4444'):'',onclick:function(){S.repsEnabled=isOn;update();repsRow.querySelectorAll('.tb').forEach(function(b,i){var a=i===0?S.repsEnabled:!S.repsEnabled;b.classList.toggle('ac',a);b.style.background=a?(i===0?'#14B8A6':'#EF4444'):'';});}},isOn?'REPS Enabled':'REPS Disabled'));});
+
+  e.append(h('div',{className:'g2'},
+    h('div',null,
+      h('div',{style:'margin-bottom:28px'},ST('👩‍💼','Real Estate Professional Status (REPS)'),
+        h('div',{className:'ss',style:'margin-bottom:8px'},'IRC §469(c)(7) · 750+ hrs/yr · >50% of working time in RE'),repsRow,
+        h('div',{className:'p '+(S.repsEnabled?'p-teal':''),id:'reps-info'})),
+      h('div',{style:'margin-bottom:28px'},ST('🏗','Depreciation Engine'),
+        slider('t-ir','Improvement Ratio','improvementRatio',40,90,5,'pctInt','% of purchase price = building (not land)'),
+        slider('t-cs','Cost Seg Reclassified %','costSegPct',0,40,1,'pctInt','Typical 15-25% for residential (from study)','#14B8A6'),
+        slider('t-pp','Personal Property (Furniture etc)','personalPropValue',0,100000,1000,'dollar','Furnishings, appliances, decor','#D4A054'),
+        slider('t-bd','Bonus Depreciation Rate','bonusDepRate',0,100,5,'pctInt','OBBBA restored 100% for post-1/19/2025','#10B981'),
+        h('div',{className:'caveat'},'OBBBA (P.L. 119-21, signed 7/4/2025) permanently restored 100% bonus depreciation under IRC §168(k) for qualified property acquired and placed in service after 1/19/2025. Property with MACRS class life ≤20 years qualifies. The 27.5-year residential structure does NOT qualify — only cost-seg reclassified 5/7/15-year components and personal property. California does not conform to federal bonus depreciation; bonus dep tax savings apply at federal rate only.'))),
+    h('div',null,h('div',{className:'p p-gold',id:'dep-ws'}),h('div',{className:'p p-teal',style:'margin-top:16px',id:'int-ws'}),h('div',{className:'p',style:'margin-top:16px',id:'passive-ws'}))));
+}
+
+function buildAnalysis(){var e=document.getElementById('t-analysis');e.innerHTML='';
+  e.append(h('div',{id:'a-banner'}),h('div',{className:'g2'},
+    h('div',null,h('div',{className:'p',style:'margin-bottom:16px',id:'a-ss'}),h('div',{className:'p',id:'a-pl'})),
+    h('div',null,h('div',{className:'p',style:'margin-bottom:16px;padding-bottom:8px'},h('div',{style:'font-size:11px;font-weight:700;margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase'},'Annual With vs Without Mills Act'),h('div',{style:'position:relative;height:200px'},h('canvas',{id:'ch-bar'}))),
+      h('div',{className:'p',id:'a-metrics'}),h('div',{className:'hl-purple',style:'margin-top:16px;padding:12px',id:'a-reps'}))));
+}
+
+// Master slider list
+var SLS=[
+  ['d-nr','nightlyRate',100,600,'nights'],['d-so','strOccupancy',30,95,'pctInt'],
+  ['d-lr','ltrMonthlyRent',1500,8000,'dollar'],['d-lv','ltrVacancy',0,15,'pctInt'],
+  ['d-la','loanAmount',100000,1500000,'dollar'],['d-lr2','loanRate',3,9,'percent'],
+  ['d-pp','purchasePrice',200000,2000000,'dollar'],['d-ap','appreciationRate',0,8,'pctInt'],
+  ['m-pp','purchasePrice',200000,2000000,'dollar'],['m-mv','marketValue',200000,2000000,'dollar'],
+  ['m-ptr','propTaxRate',1.0,1.5,'percent'],['m-mfr','monthlyFairRent',1500,8000,'dollar'],
+  ['m-vr','vacancyRate',0,15,'pctInt'],['m-moe','monthlyOpEx',100,1500,'dollar'],
+  ['m-ic','interestComp',2.5,8.0,'percent'],['m-ptc','propTaxComp',0.8,1.5,'percent'],
+  ['m-rl','remainingLife',20,80,'years'],['m-ir','improvementRatio',40,90,'pctInt'],
+  ['r-nr','nightlyRate',100,600,'nights'],['r-so','strOccupancy',30,95,'pctInt'],
+  ['r-tr','totRate',10,15,'percent'],['r-sm','strMgmtPct',0,30,'pctInt'],
+  ['r-lr','ltrMonthlyRent',1500,8000,'dollar'],['r-lv','ltrVacancy',0,15,'pctInt'],['r-lm','ltrMgmtPct',0,15,'pctInt'],
+  ['c-la','loanAmount',100000,1500000,'dollar'],['c-lr','loanRate',3,9,'percent'],
+  ['c-lt','loanTerm',10,30,'years'],['c-pmi','monthlyPMI',0,500,'dollar'],
+  ['c-mi','monthlyInsurance',100,800,'dollar'],['c-mu','monthlyUtilities',200,2000,'dollar'],
+  ['c-ml','monthlyLawn',0,500,'dollar'],['c-mp','monthlyPool',0,500,'dollar'],['c-mm','monthlyMaint',0,1000,'dollar'],
+  ['c-fr','fedRate',10,37,'pctInt'],['c-sr','stateRate',0,13.3,'percent'],
+  ['t-ir','improvementRatio',40,90,'pctInt'],['t-cs','costSegPct',0,40,'pctInt'],
+  ['t-pp','personalPropValue',0,100000,'dollar'],['t-bd','bonusDepRate',0,100,'pctInt']
+];
+
+function update(){
+  var c=calc();
+  SLS.forEach(function(s){usl(s[0],s[1],s[2],s[3],s[4]);});
+
+  // Dashboard stats
+  var ds=document.getElementById('d-stats');
+  if(ds){ds.innerHTML='';ds.append(
+    SC('Mills Act Savings',fmtD(c.sav),c.sp.toFixed(0)+'% reduction','gold','§'),
+    SC('Yr1 Depreciation',fmtD(c.yr1TotalDep),'Tax value: '+fmtD(c.yr1DepTax),'teal','🏗'),
+    SC('Interest Deduction',fmtD(c.yr1Int),'Tax value: '+fmtD(c.intTaxSav),'purple','🏦'),
+    S.mode!=="owner"?SC('Net Revenue',fmtD(c.revNet),ml[S.mode],'blue','$'):SC('Mode','Owner','No rental income','neutral','🏠'),
+    SC('Annual Net',fmtD(c.netPos),c.viable?'Viable':'Loss',c.viable?'green':'red',c.viable?'✓':'✕'),
+    SC(S.repsEnabled?'W2 Offset':'Passive Loss',S.repsEnabled?fmtD(c.w2Offset):fmtD(c.suspLoss),S.repsEnabled?'REPS active':'Losses suspended',S.repsEnabled?'teal':'orange',S.repsEnabled?'⚡':'⏸'));}
+  var csub=document.getElementById('ch-sub');if(csub)csub.textContent=S.projYears+'-year projection · '+ml[S.mode]+' · '+(S.repsEnabled?'REPS ON':'REPS OFF')+' · Total Wealth = Net Equity + Cash Flow + Tax Benefits';
+  renderArea(c);
+
+  // Mills worksheet
+  var mw=document.getElementById('mills-ws');
+  if(mw){mw.innerHTML='';mw.append(
+    h('div',{style:'font-size:11px;font-weight:700;color:#D4A054;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'◈ Income Cap Worksheet'),
+    IR('Gross Annual Income',fmtD(c.gai)),IR('Less Vacancy','('+fmtD(c.vd)+')',null,true),IR('Less OpEx','('+fmtD(c.aoe)+')',null,true),IR('NOI',fmtD(c.noi),'gold'),
+    h('div',{className:'sp'}),IR('Interest Comp',fmtP(S.interestComp),null,true),IR('Risk Comp',fmtP(c.rc),null,true),IR('Prop Tax Comp',fmtP(S.propTaxComp),null,true),IR('Amortization',fmtP(c.ac),null,true),IR('Total Cap Rate',fmtP(c.tcr),'gold'),
+    h('div',{className:'sp'}),IR('Restricted Value',fmtD(c.rv),'blue'),IR('Enrolled Value',fmtD(c.ev),'green'),
+    h('div',{style:'height:12px'}),h('div',{className:'hl-gold'},IR('Standard Tax',fmtD(c.sat)),IR('Mills Act Tax',fmtD(c.mat),'green'),IR('Annual Savings ('+c.sp.toFixed(0)+'%)',fmtD(c.sav),'gold')));}
+
+  // Revenue breakdown
+  var rb=document.getElementById('rev-bd');
+  if(rb){rb.innerHTML='';rb.append(h('div',{style:'font-size:11px;font-weight:700;color:'+mc[S.mode]+';margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'$ Revenue'),MT());
+    if(S.mode==="owner"){rb.append(h('div',{style:'padding:20px 0;text-align:center;color:#6B7280'},'No rental revenue'),h('div',{className:'hl-green'},IR('Annual Mills Act Savings',fmtD(c.sav),'green')));}
+    else if(S.mode==="ltr"){rb.append(IR('Gross Annual',fmtD(c.revGross),'blue'),IR('Less Vacancy+Mgmt','('+fmtD(c.revDed)+')',null,true),IR('Net LTR Revenue',fmtD(c.revNet),'green'),h('div',{style:'height:12px'}),h('div',{className:'hl-blue'},IR('Break-Even Rent',fmtD(c.benLtr)+'/mo','blue')));}
+    else{rb.append(IR('Nights/Year',c.revNights+''),IR('Gross Annual',fmtD(c.revGross),'gold'),IR('Less TOT+Mgmt','('+fmtD(c.revDed)+')',null,true),IR('Net STR Revenue',fmtD(c.revNet),'green'),h('div',{style:'height:12px'}),h('div',{className:'hl-gold'},IR('Break-Even Rate','$'+c.benr.toFixed(0)+'/nt','gold')));}}
+
+  // Loan calc
+  var lc=document.getElementById('loan-calc');
+  if(lc){lc.innerHTML='';lc.append(
+    h('div',{style:'font-size:11px;font-weight:700;color:#14B8A6;margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase'},'Computed Payments'),
+    IR('Monthly P&I',fmtD(c.mpi),'teal'),IR('Monthly PMI',fmtD(S.monthlyPMI),null,true),IR('Total Monthly Mortgage',fmtD(c.totalMoMtg),'teal'),
+    h('div',{className:'sp'}),IR('Year 1 Interest Paid',fmtD(c.yr1Int),'purple'),IR('Year 1 Principal Paid',fmtD(c.mpi*12-c.yr1Int)),
+    h('div',{className:'caveat'},'P&I computed from loan amount, rate, and term. Adjust any to see payment change.'));}
+
+  // Cost TCO
+  var ct=document.getElementById('cost-tco');
+  if(ct){ct.innerHTML='';ct.append(
+    h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'⚙ Total Cost of Ownership'),MT(),
+    IR('Mortgage (P&I+PMI)',fmtD(c.totalMoMtg)),IR('Property Tax (Mills)',fmtD(c.mpt),null,true),IR('Insurance',fmtD(S.monthlyInsurance),null,true),
+    IR('Utilities',fmtD(S.monthlyUtilities),null,true),IR('Lawn',fmtD(S.monthlyLawn),null,true),IR('Pool',fmtD(S.monthlyPool),null,true),IR('Maintenance',fmtD(S.monthlyMaint),null,true),
+    h('div',{className:'sp'}),IR('Total Monthly',fmtD(c.tmc),'red'),IR('Total Annual',fmtD(c.tac),'red'),
+    h('div',{style:'height:12px'}),h('div',{className:'hl-green'},IR('Without Mills Act (mo)',fmtD(c.tmcs)),IR('Mills Savings (mo)',fmtD((c.tacs-c.tac)/12),'green')));}
+
+  // Depreciation worksheet
+  var dw=document.getElementById('dep-ws');
+  if(dw){dw.innerHTML='';dw.append(
+    h('div',{style:'font-size:11px;font-weight:700;color:#D4A054;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'🏗 Depreciation Worksheet'),MT(),RB(),
+    IR('Purchase Price',fmtD(S.purchasePrice)),IR('Improvement Ratio',S.improvementRatio+'%',null,true),IR('Depreciable Basis',fmtD(c.depBasis),'gold'),
+    h('div',{className:'sp'}),
+    h('div',{style:'font-size:10px;font-weight:700;color:#9CA3AF;margin:8px 0 4px'},'27.5-Year Structure (Straight Line)'),
+    IR('Structure Basis',fmtD(c.structBasis),null,true),IR('Annual Deduction',fmtD(c.annStructDep),'green'),IR('Tax Savings (Fed+State)',fmtD(c.depTaxStruct),null,true),
+    h('div',{style:'font-size:10px;font-weight:700;color:#9CA3AF;margin:8px 0 4px'},'Cost Seg Reclassified (5/7/15-Yr) + Bonus'),
+    IR('Cost Seg Basis ('+S.costSegPct+'%)',fmtD(c.csBasis),null,true),IR('Year 1 Bonus ('+S.bonusDepRate+'%)',fmtD(c.yr1BonusCS),'teal'),
+    h('div',{style:'font-size:10px;font-weight:700;color:#9CA3AF;margin:8px 0 4px'},'Personal Property (Furniture/Appliances)'),
+    IR('Personal Prop Value',fmtD(S.personalPropValue),null,true),IR('Year 1 Bonus ('+S.bonusDepRate+'%)',fmtD(c.yr1BonusPP),'teal'),
+    h('div',{className:'dv'}),IR('YEAR 1 TOTAL DEPRECIATION',fmtD(c.yr1TotalDep),'gold'),IR('Year 2+ Annual Depreciation',fmtD(c.ongoingDep)),
+    h('div',{className:'sp'}),
+    h('div',{className:'hl-gold'},IR('Yr1 Dep Tax Savings (Fed)',fmtD(c.depTaxBonusFed),'gold'),IR('Yr1 Dep Tax Savings (Fed+State)',fmtD(c.depTaxStruct)),IR('Yr1 Total Dep Tax Value',fmtD(c.yr1DepTax),'gold')),
+    h('div',{className:'caveat'},'Bonus depreciation (cost seg + personal property) saves at federal rate only ('+S.fedRate+'%) due to California non-conformity with IRC §168(k). Structure depreciation (27.5-yr) saves at combined rate ('+fmtP(S.fedRate+S.stateRate)+').'));}
+
+  // Interest deduction
+  var iw=document.getElementById('int-ws');
+  if(iw){iw.innerHTML='';iw.append(
+    h('div',{style:'font-size:11px;font-weight:700;color:#14B8A6;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'🏦 Mortgage Interest Deduction'),MT(),
+    IR('Year 1 Interest Paid',fmtD(c.yr1Int)),
+    IR('Deductible Amount',fmtD(c.intDed),'teal'),
+    IR('Tax Savings',fmtD(c.intTaxSav),'green'),
+    h('div',{className:'caveat'},S.mode==="owner"?'Owner-occupied: Deducted on Schedule A (itemized). Capped at interest on first $750K of acquisition debt. Must exceed standard deduction to benefit.':'Rental: Deducted on Schedule E as business expense. No $750K cap. Reduces AGI directly — more valuable than Schedule A itemization.'));}
+
+  // Passive loss / REPS / EBL
+  var pw=document.getElementById('passive-ws');
+  if(pw){pw.innerHTML='';
+    var isRental=S.mode!=="owner";
+    pw.append(h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'⚖ Passive Loss & EBL Analysis'),MT(),RB());
+    if(!isRental){
+      pw.append(h('div',{style:'padding:16px 0;text-align:center;color:#6B7280;font-size:12px'},'Passive loss rules not applicable in owner-occupied mode. REPS status has no effect without rental activity.'));
+    } else {
+      pw.append(
+        IR('Schedule E Income',fmtD(c.schedEInc)),IR('Schedule E Deductions',fmtD(c.schedEDed),null,true),
+        IR('Net Schedule E',fmtD(c.schedENet),c.schedENet>=0?'green':'red'),
+        h('div',{className:'sp'}));
+      if(c.rentalLoss>0){
+        pw.append(IR('Rental Loss Generated',fmtD(c.rentalLoss),'orange'));
+        if(S.repsEnabled){
+          pw.append(
+            h('div',{className:'hl-teal'},
+              IR('REPS: Loss Offsets W2 Income','YES','teal'),
+              IR('Usable Loss (pre-EBL)',fmtD(c.rentalLoss),'teal'),
+              IR('EBL Limit (2026 MFJ)',fmtD(c.eblLimit)),
+              c.eblExcess>0?IR('EBL EXCESS (deferred to NOL)',fmtD(c.eblExcess),'red'):IR('Within EBL Limit','✓','green'),
+              IR('Usable Loss (post-EBL)',fmtD(c.usableLoss),'teal'),
+              IR('W2 Tax Offset Value',fmtD(c.w2Offset),'green')),
+            c.eblExcess>0?h('div',{className:'caveat'},'IRC §461(l) Excess Business Loss limitation: losses exceeding $305,000 (2026 MFJ) are deferred as NOL carryforwards under §172. The excess '+fmtD(c.eblExcess)+' carries forward to offset future income — it is not lost, just delayed.'):null);
+        } else {
+          pw.append(
+            h('div',{className:'hl-red'},
+              IR('REPS: Loss Offsets W2','NO','red'),
+              IR('$25K Active Participation','Phased out (MAGI >$150K)','red'),
+              IR('Suspended Loss',fmtD(c.suspLoss),'orange'),
+              IR('W2 Tax Offset','$0','red')),
+            h('div',{className:'caveat'},'Without REPS, IRC §469 treats rental losses as passive. At your income level ($223K+), the $25K active participation allowance (§469(i)) is fully phased out above $150K MAGI. Losses suspend until you generate passive income or sell the property. REPS (via Jessi) would unlock these losses against your W2.'));
+        }
+      } else {
+        pw.append(IR('Rental shows taxable income',fmtD(c.rentalProfit),'green'),h('div',{className:'note'},'No passive loss to analyze — the rental is profitable on a tax basis.'));
+      }
+    }
+  }
+
+  // REPS info panel
+  var ri=document.getElementById('reps-info');
+  if(ri){ri.innerHTML='';
+    if(S.mode==="owner"){ri.append(h('div',{style:'padding:12px;text-align:center;color:#6B7280;font-size:11px'},'REPS has no effect in owner-occupied mode. It requires active rental activity to generate deductible losses against W2 income.'));}
+    else{ri.append(
+      IR('Status',S.repsEnabled?'ACTIVE':'INACTIVE',S.repsEnabled?'teal':'red'),
+      IR('Rental Loss Available',fmtD(c.rentalLoss)),
+      IR('W2 Offset Value',S.repsEnabled?fmtD(c.w2Offset):'$0 (suspended)',S.repsEnabled?'green':'red'),
+      h('div',{className:'caveat'},'Requires: 750+ hrs/yr in RE trades/businesses AND >50% of total working hours. Only one spouse needs to qualify on a joint return. Material participation in each rental activity (or §1.469-9(g) grouping election) also required. The 3.8% NIIT may also be avoided with REPS.'));
+    }
+  }
+
+  // Analysis
+  var ab=document.getElementById('a-banner');
+  if(ab){ab.innerHTML='';
+    var banner=h('div',{className:'vb',style:'background:'+c.vColor+'10;border:1px solid '+c.vColor+'40'});
+    banner.append(
+      h('div',{className:'vi',style:'background:'+c.vColor+'20'},c.vIcon),
+      h('div',null,
+        h('div',{className:'vt',style:'color:'+c.vColor},c.vLabel+' — '+ml[S.mode]),
+        h('div',{className:'vs2'},c.vDesc)));
+    ab.append(banner);
+    // Total Return breakdown bar
+    var trBox=h('div',{className:'p',style:'margin-top:12px;margin-bottom:8px'});
+    trBox.append(
+      h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'Total Annual Return (5 Pillars of RE Wealth)'),
+      IR('Cash Flow (Revenue - Costs)',fmtD(c.netPos),c.netPos>=0?'green':'red'),
+      IR('Appreciation ('+S.appreciationRate+'%)',fmtD(c.annAppreciation),'blue'),
+      IR('Equity Paydown (Yr1 Principal)',fmtD(c.yr1Principal),'purple'),
+      IR('Tax Benefits (Mills+Dep+Int'+(S.repsEnabled?'+REPS':'')+')',fmtD(c.totalTaxBen),'teal'),
+      h('div',{className:'dv'}),
+      IR('TOTAL ANNUAL RETURN',fmtD(c.totalReturn),c.totalReturn>=0?'gold':'red'),
+      h('div',{className:'caveat'},'Appreciation is unrealized until sale. Equity paydown builds net worth but is not liquid. Tax benefits are real annual savings. Cash flow is what hits your bank account. A healthy RE strategy balances all five pillars.'));
+    ab.append(trBox);
+  }
+  var ss=document.getElementById('a-ss');
+  if(ss){ss.innerHTML='';
+    var soundTxt,sassyTxt;
+    if(S.mode==='owner'){soundTxt='Owner-occupied with 4% risk. Maximum Mills Act savings.';sassyTxt='Nothing sassy about owner-occupied. You are in the safest spot.';}
+    else if(S.repsEnabled){soundTxt='REPS active. Full rental losses offset W2. Yr1 dep tax value: <strong style=color:#10B981>'+fmtD(c.yr1DepTax)+'</strong>. Ensure Jessi logs 750+ hrs.';sassyTxt='Claim 4% risk while running '+ml[S.mode]+'. No SBE case law on part-time STR. Extra: <strong style=color:#D4A054>~'+fmtD(c.sav*0.17)+'</strong>/yr';}
+    else{soundTxt='No REPS. Losses suspended. Focus on cash flow. Mills savings: <strong style=color:#10B981>'+fmtD(c.sav)+'</strong>';sassyTxt='Claim REPS without proper docs. IRS heavily audits. NOT worth the risk.';}
+    ss.append(
+      h('div',{style:'font-size:11px;font-weight:700;color:#D4A054;margin-bottom:12px;letter-spacing:.06em;text-transform:uppercase'},'Sound vs Sassy'),MT(),RB(),
+      h('div',{className:'ssg'},
+        h('div',{className:'ssc',style:'background:#10B98108;border:1px solid #10B98120'},h('div',{className:'sst',style:'color:#10B981'},'SOUND'),h('div',{className:'ssb',innerHTML:soundTxt})),
+        h('div',{className:'ssc',style:'background:#D4A05408;border:1px solid #D4A05420'},h('div',{className:'sst',style:'color:#D4A054'},'SASSY'),h('div',{className:'ssb',innerHTML:sassyTxt}))));}
+
+  var pl=document.getElementById('a-pl');
+  if(pl){pl.innerHTML='';
+    var plItems=[h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'Annual P&L'),MT()];
+    if(S.mode!=="owner"){
+      plItems.push(IR('Gross Revenue',fmtD(c.revGross)));
+      plItems.push(IR('Less Deductions','('+fmtD(c.revDed)+')',null,true));
+      plItems.push(IR('Net Revenue',fmtD(c.revNet),'green'));
+    }
+    plItems.push(IR('Mills Act Savings',fmtD(c.sav),'gold'));
+    plItems.push(h('div',{className:'dv'}));
+    plItems.push(IR('Total Income + Savings',fmtD(c.revNet+c.sav),'green'));
+    plItems.push(h('div',{className:'sp'}));
+    plItems.push(IR('Cost of Ownership','('+fmtD(c.tac)+')','red'));
+    plItems.push(h('div',{className:'dv'}));
+    plItems.push(IR('NET CASH POSITION',fmtD(c.netPos),c.netPos>=0?'green':'red'));
+    plItems.push(h('div',{className:'sp'}));
+    plItems.push(IR('Appreciation ('+S.appreciationRate+'%)',fmtD(c.annAppreciation),'blue'));
+    plItems.push(IR('Equity Paydown',fmtD(c.yr1Principal),'purple'));
+    plItems.push(IR('Tax Benefits',fmtD(c.totalTaxBen),'teal'));
+    if(S.repsEnabled&&c.rentalLoss>0){plItems.push(IR('REPS W2 Offset',fmtD(c.w2Offset),'teal'));}
+    plItems.push(h('div',{className:'dv'}));
+    plItems.push(IR('TOTAL ANNUAL RETURN',fmtD(c.totalReturn),c.totalReturn>=0?'gold':'red'));
+    pl.append.apply(pl,plItems);}
+
+  renderBar(c);
+
+  var am=document.getElementById('a-metrics');
+  if(am){am.innerHTML='';
+    var amItems=[h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'Key Metrics'),
+      IR('Monthly Net Cash Flow',fmtD(c.netPos/12),c.netPos>=0?'green':'red'),
+      IR('Total Annual Return',fmtD(c.totalReturn),c.totalReturn>=0?'gold':'red')];
+    if(S.mode==='str'){amItems.push(IR('Break-Even Nightly','$'+c.benr.toFixed(0)+'/nt','blue'));}
+    if(S.mode==='ltr'){amItems.push(IR('Break-Even Monthly',fmtD(c.benLtr)+'/mo','blue'));}
+    amItems.push(IR('Annual Appreciation',fmtD(c.annAppreciation),'blue'));
+    amItems.push(IR('Yr1 Equity Paydown',fmtD(c.yr1Principal),'purple'));
+    var lastYr=c.yd[S.projYears-1];
+    amItems.push(IR(S.projYears+'-Yr Cumulative Cash',fmtD(lastYr.cashFlow),lastYr.cashFlow>=0?'green':'red'));
+    amItems.push(IR(S.projYears+'-Yr Tax Benefits',fmtD(lastYr.taxBen),'gold'));
+    amItems.push(IR(S.projYears+'-Yr Net Equity',fmtD(lastYr.netEquity),'blue'));
+    amItems.push(IR(S.projYears+'-Yr Total Wealth',fmtD(lastYr.totalWealth),lastYr.totalWealth>=0?'green':'red'));
+    amItems.push(IR('Yr1 Total Depreciation',fmtD(c.yr1TotalDep),'teal'));
+    amItems.push(h('div',{className:'sp'}));
+    amItems.push(IR('Cancellation Penalty (12.5%)',fmtD(S.marketValue*0.125),'red'));
+    amItems.push(h('div',{className:'note'},'Penalty exceeds savings until year '+(c.sav>0?Math.ceil((S.marketValue*0.125)/c.sav):'∞')));
+    am.append.apply(am,amItems);}
+
+  var ar=document.getElementById('a-reps');
+  if(ar){ar.innerHTML='<div style="font-size:10px;font-weight:700;color:#8B5CF6;margin-bottom:4px;font-family:Space Mono,monospace">REPS + DEPRECIATION + MILLS ACT STACK</div><div style="font-size:10px;color:#9CA3AF;line-height:1.6">'+(
+    S.mode==='owner'?'Owner-occupied: No REPS benefit. Mills Act saves <strong style="color:#8B5CF6">'+fmtD(c.sav)+'/yr</strong> on property tax. Interest deduction saves <strong style="color:#8B5CF6">'+fmtD(c.intTaxSav)+'/yr</strong> via Schedule A (if itemizing).':
+    S.repsEnabled?'REPS active via Jessi. Year 1 depreciation of <strong style="color:#8B5CF6">'+fmtD(c.yr1TotalDep)+'</strong> generates rental loss that offsets W2 income, saving <strong style="color:#8B5CF6">'+fmtD(c.w2Offset)+'</strong> in taxes.'+(c.eblExcess>0?' Note: '+fmtD(c.eblExcess)+' exceeds the §461(l) EBL limit and carries forward as NOL.':'')+' Mills Act adds <strong style="color:#8B5CF6">'+fmtD(c.sav)+'/yr</strong> in direct property tax savings.':
+    'Without REPS, rental losses of <strong style="color:#EF4444">'+fmtD(c.suspLoss)+'</strong> are suspended under §469. At $223K+ MAGI, the $25K active participation allowance is fully phased out. Mills Act still saves <strong style="color:#8B5CF6">'+fmtD(c.sav)+'/yr</strong>. Consider having Jessi qualify for REPS to unlock '+fmtD(c.suspLoss)+' in suspended losses.')+'</div>';}
+}
+
+function rebuildAll(){updateModes();buildDash();buildMills();buildRev();buildCosts();buildTax();buildAnalysis();update();}
+initModes();initTabs();buildDash();buildMills();buildRev();buildCosts();buildTax();buildAnalysis();update();
+</script>
+</body>
+</html>
