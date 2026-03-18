@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stella | The Badass Bitch Accountant</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💲</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0B0F19;--surface:#111827;--border:#1F2937;--border2:#374151;--text:#E5E7EB;--muted:#9CA3AF;--dim:#6B7280;--gold:#D4A054;--green:#10B981;--red:#EF4444;--blue:#3B82F6;--purple:#8B5CF6;--orange:#F59E0B}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--surface)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+.header{background:linear-gradient(135deg,#111827,#1a1a2e);border-bottom:1px solid #D4A05440;padding:20px 24px 0}
+.logo-row{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.avatar{width:42px;height:42px;border-radius:10px;object-fit:cover;border:2px solid var(--gold)}
+.avatar-fallback{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#D4A054,#B8860B);font-size:20px;font-weight:700;font-family:'Space Mono',monospace;color:#111827;border:2px solid var(--gold)}
+.title{font-size:17px;font-weight:700;letter-spacing:-0.02em}
+.subtitle{font-size:10px;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:0.04em}
+.meta{font-size:10px;color:var(--dim);margin-top:8px}
+
+/* Mode Toggle */
+.mode-bar{display:flex;gap:8px;margin-top:14px;padding:10px 0}
+.mode-btn{flex:1;padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--dim);font-size:11px;font-family:'Space Mono',monospace;transition:all .25s;text-align:center;line-height:1.4}
+.mode-btn .mode-icon{font-size:18px;display:block;margin-bottom:2px}
+.mode-btn .mode-label{font-weight:700;display:block}
+.mode-btn .mode-sub{font-size:9px;font-weight:400;opacity:0.7;display:block}
+.mode-btn.active-owner{background:#10B98115;border-color:#10B98150;color:var(--green)}
+.mode-btn.active-ltr{background:#3B82F615;border-color:#3B82F650;color:var(--blue)}
+.mode-btn.active-str{background:#D4A05415;border-color:#D4A05450;color:var(--gold)}
+
+.tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tab{padding:8px 14px;font-size:11px;font-family:'Space Mono',monospace;background:transparent;color:var(--dim);border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;transition:all .2s;font-weight:400}
+.tab.active{background:#D4A05420;color:var(--gold);border-color:#D4A05440;font-weight:700}
+
+.content{padding:20px 24px;max-width:1200px;margin:0 auto}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid6{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.panel{background:var(--surface);border-radius:10px;padding:16px;border:1px solid var(--border)}
+.panel-gold{border-color:#D4A05430}
+.panel-blue{border-color:#3B82F630}
+.panel-purple{border-color:#8B5CF630}
+.panel-green{border-color:#10B98130}
+.chart-panel{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:20px 20px 12px;margin-bottom:24px}
+
+.stat{border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat-label{font-size:10px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase}
+.stat-value{font-size:22px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:-0.02em}
+.stat-sub{font-size:10px;color:var(--dim)}
+.stat-gold{background:#D4A05410;border:1px solid #D4A05440}.stat-gold .stat-value{color:var(--gold)}
+.stat-green{background:#10B98110;border:1px solid #10B98140}.stat-green .stat-value{color:var(--green)}
+.stat-red{background:#EF444410;border:1px solid #EF444440}.stat-red .stat-value{color:var(--red)}
+.stat-blue{background:#3B82F610;border:1px solid #3B82F640}.stat-blue .stat-value{color:var(--blue)}
+.stat-neutral{background:#374151;border:1px solid #4B5563}.stat-neutral .stat-value{color:var(--text)}
+.stat-orange{background:#F59E0B10;border:1px solid #F59E0B40}.stat-orange .stat-value{color:var(--orange)}
+
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.section-title span{font-size:16px}
+
+.slider-group{margin-bottom:16px}
+.slider-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.slider-label{font-size:12px;color:var(--muted);letter-spacing:0.02em}
+.slider-value{font-size:14px;font-family:'Space Mono',monospace;font-weight:700}
+.slider-sub{font-size:10px;color:var(--dim);margin-bottom:4px}
+.slider-track{position:relative;height:6px;border-radius:3px;background:var(--border)}
+.slider-fill{position:absolute;height:100%;border-radius:3px;transition:width .1s}
+.slider-thumb{position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--surface);transition:left .1s;pointer-events:none}
+.slider-input{position:absolute;top:-6px;left:0;width:100%;height:18px;opacity:0;cursor:pointer;-webkit-appearance:none}
+
+.toggle-row{display:flex;border-radius:6px;overflow:hidden;border:1px solid var(--border2);margin-bottom:16px}
+.toggle-btn{flex:1;padding:6px 12px;font-size:11px;font-family:'Space Mono',monospace;border:none;transition:all .2s}
+.toggle-btn.active{background:var(--gold);color:#111827;font-weight:700}
+.toggle-btn:not(.active){background:var(--surface);color:var(--dim);font-weight:400}
+
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #1F293766}
+.info-row.indent{padding-left:16px}
+.info-row .label{font-size:12px;color:var(--muted)}
+.info-row.indent .label{color:var(--dim)}
+.info-row .val{font-size:13px;font-family:'Space Mono',monospace}
+.info-row .val.gold{color:var(--gold);font-weight:700}
+.info-row .val.green{color:var(--green);font-weight:700}
+.info-row .val.red{color:var(--red);font-weight:700}
+.info-row .val.blue{color:var(--blue);font-weight:700}
+.info-row .val.orange{color:var(--orange);font-weight:700}
+
+.highlight-box{border-radius:6px;padding:10px;margin-top:8px}
+.hl-gold{background:#D4A05410;border:1px solid #D4A05430}
+.hl-green{background:#10B98110;border:1px solid #10B98130}
+.hl-blue{background:#3B82F610;border:1px solid #3B82F630}
+.hl-purple{background:#8B5CF610;border:1px solid #8B5CF630}
+.hl-orange{background:#F59E0B10;border:1px solid #F59E0B30}
+
+.viability-banner{border-radius:10px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.viability-icon{font-size:28px;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.viability-title{font-size:15px;font-weight:700}
+.viability-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+.ss-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ss-card{border-radius:8px;padding:12px}
+.ss-title{font-size:11px;font-weight:700;margin-bottom:8px;font-family:'Space Mono',monospace}
+.ss-body{font-size:10px;color:var(--muted);line-height:1.6}
+
+.footer{margin-top:28px;padding:14px 0;border-top:1px solid var(--border);font-size:9px;color:#4B5563;font-family:'Space Mono',monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.note{font-size:10px;color:var(--dim);line-height:1.6;margin-top:6px}
+.spacer{height:8px}
+.divider{height:6px;border-bottom:2px solid var(--border2)}
+.hidden{display:none}
+
+.mode-tag{display:inline-block;font-size:9px;font-family:'Space Mono',monospace;padding:2px 8px;border-radius:4px;font-weight:700;letter-spacing:0.04em;margin-left:8px}
+.mode-tag-owner{background:#10B98120;color:var(--green)}
+.mode-tag-ltr{background:#3B82F620;color:var(--blue)}
+.mode-tag-str{background:#D4A05420;color:var(--gold)}
+
+@media(max-width:768px){.grid2,.grid3{grid-template-columns:1fr}.mode-bar{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-row">
+    <img class="avatar" id="avatar-img" src="https://share.google/EDxObmW6cthqA9knp" alt="S" onerror="this.style.display='none';document.getElementById('avatar-fb').style.display='flex';">
+    <div class="avatar-fallback" id="avatar-fb" style="display:none">S</div>
+    <div>
+      <div class="title">Stella | The Badass Bitch Accountant</div>
+      <div class="subtitle">CA Rev & Tax Code §439-439.4 · Mills Act Property Tax Engine</div>
+    </div>
+  </div>
+  <div class="meta">Income capitalization method · 2026 lien date · SBE LTA 2025/030 rates · Palm Springs defaults</div>
+
+  <div class="mode-bar" id="mode-bar"></div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="content">
+  <div id="tab-dashboard"></div>
+  <div id="tab-millsact" class="hidden"></div>
+  <div id="tab-revenue" class="hidden"></div>
+  <div id="tab-costs" class="hidden"></div>
+  <div id="tab-analysis" class="hidden"></div>
+  <div class="footer">
+    <span>Stella × Badass Bitch Accountant v2.0 · Not tax advice · Consult your CPA</span>
+    <span>CA RTC §439-439.4 · SBE LTA 2025/030 · Palm Springs Muni Code §8.05</span>
+  </div>
+</div>
+
+<script>
+/* ═══════════ STATE ═══════════ */
+const S = {
+  rentalMode:"str", // "owner" | "ltr" | "str"
+  purchasePrice:845000, marketValue:870000, propTaxRate:1.25,
+  interestComp:6.50, riskOverride:null, propTaxComp:1.10,
+  remainingLife:50, improvementRatio:70,
+  monthlyFairRent:4200, vacancyRate:5, monthlyOpEx:500,
+  // LTR
+  ltrMonthlyRent:4200, ltrVacancy:5, ltrMgmtPct:8,
+  // STR
+  nightlyRate:250, strOccupancy:65, totRate:12.5, strMgmtPct:20,
+  // Costs
+  monthlyMortgage:5300, monthlyInsurance:250, monthlyUtilities:1000,
+  monthlyLawn:200, monthlyPool:200, monthlyMaintenance:300,
+  fedRate:35, stateRate:9.3, activeTab:"dashboard"
+};
+
+const fmt=n=>n.toLocaleString("en-US",{maximumFractionDigits:0});
+const fmtD=n=>"$"+fmt(n);
+const fmtP=n=>n.toFixed(2)+"%";
+const modeColors={owner:"#10B981",ltr:"#3B82F6",str:"#D4A054"};
+const modeLabels={owner:"Owner Occupied",ltr:"Long-Term Rental",str:"Short-Term Rental"};
+
+/* ═══════════ CALCULATIONS ═══════════ */
+function calc(){
+  // Mills Act valuation (always uses fair market rent)
+  const gai=S.monthlyFairRent*12, vd=gai*(S.vacancyRate/100), eg=gai-vd, aoe=S.monthlyOpEx*12, noi=eg-aoe;
+  const riskAuto=S.rentalMode==="owner"?4:2;
+  const rc=S.riskOverride!==null?S.riskOverride:riskAuto;
+  const ac=(1/S.remainingLife)*(S.improvementRatio/100)*100;
+  const tcr=S.interestComp+rc+S.propTaxComp+ac, rv=noi/(tcr/100);
+  const av=S.purchasePrice, ev=Math.min(rv,av,S.marketValue);
+  const sat=av*(S.propTaxRate/100), mat=ev*(S.propTaxRate/100), sav=sat-mat;
+  const sp=sat>0?(sav/sat)*100:0;
+
+  // Revenue by mode
+  let revGross=0, revDeductions=0, revNet=0, revLabel="", revNights=0;
+  if(S.rentalMode==="owner"){
+    revGross=0; revDeductions=0; revNet=0; revLabel="No rental income";
+  } else if(S.rentalMode==="ltr"){
+    revGross=S.ltrMonthlyRent*12;
+    const ltrVacLoss=revGross*(S.ltrVacancy/100);
+    const ltrMgmt=(revGross-ltrVacLoss)*(S.ltrMgmtPct/100);
+    revDeductions=ltrVacLoss+ltrMgmt;
+    revNet=revGross-revDeductions;
+    revLabel="LTR Net (after vacancy + mgmt)";
+  } else {
+    revNights=Math.round(365*(S.strOccupancy/100));
+    revGross=S.nightlyRate*(S.strOccupancy/100)*365;
+    const tot=revGross*(S.totRate/100);
+    const mgmt=(revGross-tot)*(S.strMgmtPct/100);
+    revDeductions=tot+mgmt;
+    revNet=revGross-revDeductions;
+    revLabel="STR Net (after TOT + mgmt)";
+  }
+
+  // Cost of ownership
+  const mpt=mat/12;
+  const tmc=S.monthlyMortgage+S.monthlyInsurance+S.monthlyUtilities+S.monthlyLawn+S.monthlyPool+S.monthlyMaintenance+mpt;
+  const tac=tmc*12;
+  const mpts=sat/12;
+  const tmcs=S.monthlyMortgage+S.monthlyInsurance+S.monthlyUtilities+S.monthlyLawn+S.monthlyPool+S.monthlyMaintenance+mpts;
+  const tacs=tmcs*12;
+
+  // Net position
+  const netWithMills=revNet-tac;
+  const netWithout=revNet-tacs;
+  const netPos=netWithMills+sav;
+
+  // Tax
+  const cr=(S.fedRate+S.stateRate)/100, tdwm=mat*cr, tdwo=sat*cr, ntb=sav-(tdwo-tdwm);
+
+  // 10-year projection
+  const yd=[];let cwm=0,cwom=0,cso=0;
+  for(let y=1;y<=10;y++){cwm+=netWithMills;cwom+=netWithout;cso+=sav;
+    yd.push({year:y,wm:Math.round(cwm),wom:Math.round(cwom),so:Math.round(cso)});}
+
+  // Break-even (STR only)
+  const benr=S.rentalMode==="str"?tac/(365*(S.strOccupancy/100)*(1-S.totRate/100)*(1-S.strMgmtPct/100)):0;
+  // Break-even LTR rent
+  const benLtr=S.rentalMode==="ltr"?tac/12/(1-S.ltrVacancy/100)/(1-S.ltrMgmtPct/100):0;
+
+  const viable=netPos>0;
+  return {gai,vd,aoe,noi,rc,riskAuto,ac,tcr,rv,av,ev,sat,mat,sav,sp,
+    revGross,revDeductions,revNet,revLabel,revNights,
+    mpt,tmc,tac,tmcs,tacs,netWithMills,netWithout,netPos,
+    ntb,tdwm,yd,benr,benLtr,viable};
+}
+
+/* ═══════════ DOM HELPERS ═══════════ */
+function h(tag,attrs){
+  const el=document.createElement(tag);
+  if(attrs)Object.entries(attrs).forEach(([k,v])=>{
+    if(k==='className')el.className=v;
+    else if(k==='onclick')el.onclick=v;
+    else if(k.startsWith('data'))el.setAttribute(k,v);
+    else if(k==='innerHTML')el.innerHTML=v;
+    else el[k]=v;
+  });
+  for(let i=2;i<arguments.length;i++){
+    const c=arguments[i];
+    if(c==null)continue;
+    if(Array.isArray(c))c.forEach(x=>{if(x)el.append(typeof x==='string'?document.createTextNode(x):x);});
+    else el.append(typeof c==='string'?document.createTextNode(c):c);
+  }
+  return el;
+}
+
+function slider(id,label,key,min,max,step,format,sublabel,color){
+  const clr=color||'#D4A054';
+  const grp=h('div',{className:'slider-group'});
+  grp.append(
+    h('div',{className:'slider-header'},
+      h('span',{className:'slider-label'},label),
+      h('span',{className:'slider-value',id:'sv-'+id,style:'color:'+clr})
+    )
+  );
+  if(sublabel)grp.append(h('div',{className:'slider-sub'},sublabel));
+  const track=h('div',{className:'slider-track'});
+  track.append(
+    h('div',{className:'slider-fill',id:'sf-'+id,style:'background:linear-gradient(90deg,'+clr+'44,'+clr+')'}),
+    h('input',{type:'range',className:'slider-input',min:min,max:max,step:step,value:S[key],
+      oninput:function(e){S[key]=Number(e.target.value);update();}}),
+    h('div',{className:'slider-thumb',id:'st-'+id,style:'background:'+clr})
+  );
+  grp.append(track);
+  return grp;
+}
+
+function updateSlider(id,key,min,max,format){
+  const v=S[key],pct=((v-min)/(max-min))*100;
+  const disp=format==='dollar'?fmtD(v):format==='percent'?fmtP(v):format==='years'?v+' yrs':format==='nights'?'$'+v+'/night':format==='pctInt'?v+'%':''+v;
+  const sv=document.getElementById('sv-'+id);if(sv)sv.textContent=disp;
+  const sf=document.getElementById('sf-'+id);if(sf)sf.style.width=pct+'%';
+  const st=document.getElementById('st-'+id);if(st)st.style.left='calc('+pct+'% - 6px)';
+}
+
+function infoRow(label,value,hl,indent){
+  return h('div',{className:'info-row'+(indent?' indent':'')},
+    h('span',{className:'label'},label),
+    h('span',{className:'val'+(hl?' '+hl:'')},value));
+}
+function statCard(label,value,sublabel,variant,icon){
+  return h('div',{className:'stat stat-'+variant},
+    h('div',{className:'stat-label'},(icon||'')+' '+label),
+    h('div',{className:'stat-value'},value),
+    sublabel?h('div',{className:'stat-sub'},sublabel):null);
+}
+function sectionTitle(emoji,text){
+  return h('div',{className:'section-title'},h('span',null,emoji),text);
+}
+function modeTag(){
+  return h('span',{className:'mode-tag mode-tag-'+S.rentalMode},modeLabels[S.rentalMode]);
+}
+
+/* ═══════════ CHARTS ═══════════ */
+let areaChart=null, barChart=null;
+function renderAreaChart(c){
+  const ctx=document.getElementById('chart-area');if(!ctx)return;
+  if(areaChart)areaChart.destroy();
+  const clr=modeColors[S.rentalMode];
+  areaChart=new Chart(ctx,{type:'line',data:{labels:c.yd.map(d=>'Y'+d.year),datasets:[
+    {label:'With Mills Act',data:c.yd.map(d=>d.wm),borderColor:clr,backgroundColor:clr+'30',fill:true,tension:.3,borderWidth:2},
+    {label:'Without Mills Act',data:c.yd.map(d=>d.wom),borderColor:'#EF4444',backgroundColor:'#EF444415',fill:true,tension:.3,borderWidth:2,borderDash:[5,5]},
+    {label:'Tax Savings Only',data:c.yd.map(d=>d.so),borderColor:'#D4A054',backgroundColor:'#D4A05420',fill:true,tension:.3,borderWidth:1.5,borderDash:[2,2]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9CA3AF',font:{family:'Space Mono',size:10}}},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#E5E7EB',borderColor:'#374151',borderWidth:1,bodyFont:{family:'Space Mono',size:11},callbacks:{label:x=>x.dataset.label+': '+fmtD(x.raw)}}},scales:{x:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:10}},grid:{color:'#1F2937'}},y:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:10},callback:v=>'$'+(v/1000).toFixed(0)+'k'},grid:{color:'#1F2937'}}}}});
+}
+function renderBarChart(c){
+  const ctx=document.getElementById('chart-bar');if(!ctx)return;
+  if(barChart)barChart.destroy();
+  barChart=new Chart(ctx,{type:'bar',data:{labels:['Revenue','Tax Savings','Total Costs','Net Position'],datasets:[
+    {label:'With Mills Act',data:[Math.round(c.revNet),Math.round(c.sav),-Math.round(c.tac),Math.round(c.netPos)],backgroundColor:modeColors[S.rentalMode],borderRadius:3},
+    {label:'Without Mills Act',data:[Math.round(c.revNet),0,-Math.round(c.tacs),Math.round(c.netWithout)],backgroundColor:'#EF444499',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9CA3AF',font:{family:'Space Mono',size:10}}},tooltip:{backgroundColor:'#1F2937',titleColor:'#9CA3AF',bodyColor:'#E5E7EB',borderColor:'#374151',borderWidth:1,bodyFont:{family:'Space Mono',size:11},callbacks:{label:x=>x.dataset.label+': '+fmtD(x.raw)}}},scales:{x:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:9}},grid:{color:'#1F2937'}},y:{ticks:{color:'#6B7280',font:{family:'Space Mono',size:9},callback:v=>'$'+(v/1000).toFixed(0)+'k'},grid:{color:'#1F2937'}}}}});
+}
+
+/* ═══════════ MODE + TABS ═══════════ */
+const MODES=[
+  {id:'owner',icon:'🏠',label:'Owner Occupied',sub:'No rental income'},
+  {id:'ltr',icon:'📋',label:'Long-Term Rental',sub:'28+ day leases'},
+  {id:'str',icon:'✨',label:'Short-Term Rental',sub:'<28 day stays (STR)'}
+];
+const TABS=[
+  {id:'dashboard',label:'Dashboard',icon:'◈'},
+  {id:'millsact',label:'Mills Act',icon:'§'},
+  {id:'revenue',label:'Revenue',icon:'$'},
+  {id:'costs',label:'Costs',icon:'⚙'},
+  {id:'analysis',label:'Analysis',icon:'◉'}
+];
+
+function initModes(){
+  const bar=document.getElementById('mode-bar');
+  MODES.forEach(m=>{
+    const btn=h('button',{className:'mode-btn'+(S.rentalMode===m.id?' active-'+m.id:''),
+      onclick:function(){S.rentalMode=m.id;S.riskOverride=null;rebuildAll();}});
+    btn.dataset.mode=m.id;
+    btn.innerHTML='<span class="mode-icon">'+m.icon+'</span><span class="mode-label">'+m.label+'</span><span class="mode-sub">'+m.sub+'</span>';
+    bar.append(btn);
+  });
+}
+function initTabs(){
+  const container=document.getElementById('tabs');
+  TABS.forEach(t=>{
+    const btn=h('button',{className:'tab'+(S.activeTab===t.id?' active':''),
+      onclick:function(){S.activeTab=t.id;switchTab();}});
+    btn.dataset.tab=t.id;
+    btn.textContent=t.icon+' '+t.label;
+    container.append(btn);
+  });
+}
+function switchTab(){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===S.activeTab));
+  TABS.forEach(t=>{const el=document.getElementById('tab-'+t.id);if(el)el.classList.toggle('hidden',t.id!==S.activeTab);});
+  update();
+}
+function updateModes(){
+  document.querySelectorAll('.mode-btn').forEach(b=>{
+    const m=b.dataset.mode;
+    b.className='mode-btn'+(S.rentalMode===m?' active-'+m:'');
+  });
+}
+
+/* ═══════════ BUILD TABS ═══════════ */
+function buildDashboard(){
+  const el=document.getElementById('tab-dashboard');el.innerHTML='';
+  el.append(
+    h('div',{className:'grid6',id:'dash-stats'}),
+    h('div',{className:'chart-panel'},
+      h('div',{style:'font-size:12px;font-weight:700;margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase'},'10-Year Cumulative Position'),
+      h('div',{style:'font-size:10px;color:#6B7280;margin-bottom:16px',id:'chart-sub'}),
+      h('div',{style:'position:relative;height:280px'},h('canvas',{id:'chart-area'}))
+    ),
+    h('div',{className:'grid3',id:'dash-sliders'})
+  );
+  const mc=modeColors[S.rentalMode];
+  const s1=h('div',{className:'panel'});
+  if(S.rentalMode==="str"){
+    s1.append(slider('d-nr','Nightly Rate','nightlyRate',100,600,10,'nights',null,mc),
+              slider('d-so','STR Occupancy','strOccupancy',30,95,1,'pctInt',null,'#3B82F6'));
+  } else if(S.rentalMode==="ltr"){
+    s1.append(slider('d-lr','Monthly LTR Rent','ltrMonthlyRent',1500,8000,100,'dollar',null,mc),
+              slider('d-lv','LTR Vacancy','ltrVacancy',0,15,1,'pctInt',null,'#3B82F6'));
+  } else {
+    s1.append(h('div',{style:'text-align:center;padding:20px 0;color:#6B7280;font-size:12px'},
+      h('div',{style:'font-size:24px;margin-bottom:8px'},'🏠'),
+      'Owner occupied — no rental revenue.',h('br'),
+      'Mills Act savings reduce your cost of living.'));
+  }
+  const s2=h('div',{className:'panel'},
+    slider('d-mfr','Fair Market Rent (Assessor)','monthlyFairRent',1500,8000,100,'dollar',null,'#10B981'),
+    slider('d-pp','Purchase Price','purchasePrice',200000,2000000,5000,'dollar',null,'#D4A054'));
+  const s3=h('div',{className:'panel'},
+    slider('d-fr','Federal Tax Rate','fedRate',10,37,1,'pctInt',null,'#8B5CF6'),
+    slider('d-sr','CA State Rate','stateRate',0,13.3,0.1,'percent',null,'#8B5CF6'));
+  document.getElementById('dash-sliders').append(s1,s2,s3);
+}
+
+function buildMillsAct(){
+  const el=document.getElementById('tab-millsact');el.innerHTML='';
+  // Risk toggle
+  const riskAuto=S.rentalMode==="owner"?4:2;
+  const currentRisk=S.riskOverride!==null?S.riskOverride:riskAuto;
+  const toggleLabel=h('div',{style:'font-size:12px;color:#9CA3AF;margin-bottom:6px;letter-spacing:.02em'},'Risk Component (RTC §439.2)');
+  const toggleRow=h('div',{className:'toggle-row'});
+  [4,2].forEach(val=>{
+    const lbl=val===4?'Owner-Occupied (4%)':'Rental (2%)';
+    const isActive=currentRisk===val;
+    const btn=h('button',{className:'toggle-btn'+(isActive?' active':''),
+      onclick:function(){S.riskOverride=val;update();
+        toggleRow.querySelectorAll('.toggle-btn').forEach((b,i)=>b.classList.toggle('active',i===(val===4?0:1)));}},lbl);
+    toggleRow.append(btn);
+  });
+  const autoNote=h('div',{style:'font-size:9px;color:#6B7280;margin-bottom:16px;font-style:italic'},
+    'Auto-set to '+riskAuto+'% based on '+modeLabels[S.rentalMode]+' mode'+(S.riskOverride!==null?' (overridden)':''));
+
+  const left=h('div',null,
+    h('div',{style:'margin-bottom:28px'},sectionTitle('⌂','Property'),
+      slider('m-pp','Purchase Price (Prop 13 Base)','purchasePrice',200000,2000000,5000,'dollar','Assessed value for recent purchase'),
+      slider('m-mv','Current Market Value','marketValue',200000,2000000,5000,'dollar'),
+      slider('m-ptr','Effective Property Tax Rate','propTaxRate',1.0,1.5,0.01,'percent','Palm Springs typical ~1.25%')),
+    h('div',{style:'margin-bottom:28px'},sectionTitle('§','Fair Market Rent (Mills Act Valuation)'),
+      slider('m-mfr','Monthly Fair Market Rent','monthlyFairRent',1500,8000,100,'dollar','Assessor LTR value — NOT your actual revenue','#10B981'),
+      slider('m-vr','Vacancy & Collection Loss','vacancyRate',0,15,1,'pctInt',null,'#10B981'),
+      slider('m-moe','Monthly Operating Expenses','monthlyOpEx',100,1500,50,'dollar','Excludes debt, depreciation, prop tax','#10B981'))
+  );
+  const right=h('div',null,
+    h('div',{style:'margin-bottom:28px'},sectionTitle('⚡','Capitalization Rate Components'),
+      slider('m-ic','Interest Component (SBE LTA 2025/030)','interestComp',2.5,8.0,0.25,'percent','2026 lien date = 6.50%'),
+      toggleLabel,toggleRow,autoNote,
+      slider('m-ptc','Property Tax Component','propTaxComp',0.8,1.5,0.05,'percent'),
+      slider('m-rl','Remaining Economic Life','remainingLife',20,80,5,'years','Wexler home ~50 yrs remaining'),
+      slider('m-ir','Improvement-to-Total Ratio','improvementRatio',40,90,5,'pctInt','% of value in improvements vs. land')),
+    h('div',{className:'panel panel-gold',id:'mills-worksheet'})
+  );
+  el.append(h('div',{className:'grid2'},left,right));
+}
+
+function buildRevenue(){
+  const el=document.getElementById('tab-revenue');el.innerHTML='';
+  const mc=modeColors[S.rentalMode];
+  const left=h('div');
+  if(S.rentalMode==="owner"){
+    left.append(h('div',{className:'panel panel-green',style:'text-align:center;padding:40px 20px'},
+      h('div',{style:'font-size:48px;margin-bottom:12px'},'🏠'),
+      h('div',{style:'font-size:16px;font-weight:700;color:#10B981;margin-bottom:8px'},'Owner Occupied Mode'),
+      h('div',{style:'font-size:12px;color:#9CA3AF;line-height:1.6;max-width:400px;margin:0 auto'},
+        'No rental revenue in this mode. Your Mills Act savings of ',h('strong',{style:'color:#10B981'},fmtD(calc().sav)+'/yr'),
+        ' directly reduce your cost of living. Switch to LTR or STR mode above to model rental income scenarios.')));
+  } else if(S.rentalMode==="ltr"){
+    left.append(h('div',{style:'margin-bottom:28px'},sectionTitle('📋','Long-Term Rental Revenue (28+ Days)'),
+      slider('r-lr','Monthly Rent','ltrMonthlyRent',1500,8000,100,'dollar','What you charge a long-term tenant',mc),
+      slider('r-lv','Annual Vacancy Rate','ltrVacancy',0,15,1,'pctInt','Turnover gaps between tenants',mc),
+      slider('r-lm','Management Fee','ltrMgmtPct',0,15,1,'pctInt','Property manager cut (0% if self-managed)',mc)),
+      h('div',{className:'panel panel-blue',style:'margin-top:16px'},
+        h('div',{style:'font-size:10px;color:#6B7280;line-height:1.6',innerHTML:
+          '<strong style="color:#3B82F6">⚡ KEY DISTINCTION:</strong> The Mills Act valuation uses the assessor\'s fair market rent ('+fmtD(S.monthlyFairRent)+'/mo) for the income capitalization formula. Your actual LTR rent ('+fmtD(S.ltrMonthlyRent)+'/mo) is what determines your real cash flow. These can differ.'})));
+  } else {
+    left.append(h('div',{style:'margin-bottom:28px'},sectionTitle('✨','Short-Term Rental Revenue (<28 Days)'),
+      slider('r-nr','Nightly Rate','nightlyRate',100,600,10,'nights','Average across peak + off-peak',mc),
+      slider('r-so','Annual Occupancy Rate','strOccupancy',30,95,1,'pctInt','PS avg ~55-70%',mc),
+      slider('r-tr','TOT + TBID Rate','totRate',10,15,0.5,'percent','Palm Springs: 11.5% TOT + 1% TBID','#EF4444'),
+      slider('r-sm','Management/Platform Fee','strMgmtPct',0,30,1,'pctInt','Airbnb ~3-15%, PM ~15-25%',mc)),
+      h('div',{className:'panel panel-gold',style:'margin-top:16px'},
+        h('div',{style:'font-size:10px;color:#6B7280;line-height:1.6',innerHTML:
+          '<strong style="color:#D4A054">⚡ SOUND vs SASSY:</strong> The Mills Act valuation uses fair market LTR rent ('+fmtD(S.monthlyFairRent)+'/mo). Your STR gross ('+fmtD(calc().revGross)+'/yr) is completely separate. The assessor doesn\'t care what you charge per night.'})));
+  }
+  const right=h('div',null,h('div',{className:'panel',id:'rev-breakdown'}));
+  el.append(h('div',{className:'grid2'},left,right));
+}
+
+function buildCosts(){
+  const el=document.getElementById('tab-costs');el.innerHTML='';
+  const left=h('div',null,
+    h('div',{style:'margin-bottom:28px'},sectionTitle('⚙','Fixed Monthly Costs'),
+      slider('c-mm','Monthly Mortgage (P&I + PMI)','monthlyMortgage',0,10000,50,'dollar','$750K @ 6.625% 30yr fixed'),
+      slider('c-mi','Monthly Insurance','monthlyInsurance',100,800,25,'dollar')),
+    h('div',{style:'margin-bottom:28px'},sectionTitle('⚡','Operating Expenses'),
+      slider('c-mu','Utilities (Electric/Gas/Water/Trash)','monthlyUtilities',200,2000,50,'dollar','Desert AC drives summer costs','#10B981'),
+      slider('c-ml','Lawn / Landscaping','monthlyLawn',0,500,25,'dollar',null,'#10B981'),
+      slider('c-mp','Pool Maintenance','monthlyPool',0,500,25,'dollar',null,'#10B981'),
+      slider('c-mmt','Maintenance Reserve','monthlyMaintenance',0,1000,50,'dollar','General upkeep, repairs, turnover','#10B981'))
+  );
+  const right=h('div',null,
+    h('div',{style:'margin-bottom:28px'},sectionTitle('⊘','Tax Bracket'),
+      slider('c-fr','Federal Marginal Rate','fedRate',10,37,1,'pctInt','35% at $223K W2 + rental (MFJ)','#8B5CF6'),
+      slider('c-sr','CA State Marginal Rate','stateRate',0,13.3,0.1,'percent','9.3% bracket','#8B5CF6')),
+    h('div',{className:'panel',id:'cost-tco'}),
+    h('div',{className:'panel panel-purple',style:'margin-top:16px',id:'cost-deduction'})
+  );
+  el.append(h('div',{className:'grid2'},left,right));
+}
+
+function buildAnalysis(){
+  const el=document.getElementById('tab-analysis');el.innerHTML='';
+  el.append(
+    h('div',{id:'analysis-banner'}),
+    h('div',{className:'grid2'},
+      h('div',null,h('div',{className:'panel',style:'margin-bottom:16px',id:'analysis-ss'}),h('div',{className:'panel',id:'analysis-pl'})),
+      h('div',null,
+        h('div',{className:'panel',style:'margin-bottom:16px;padding-bottom:8px'},
+          h('div',{style:'font-size:11px;font-weight:700;margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase'},'Annual With vs Without Mills Act'),
+          h('div',{style:'position:relative;height:200px'},h('canvas',{id:'chart-bar'}))),
+        h('div',{className:'panel',id:'analysis-metrics'}),
+        h('div',{className:'hl-purple',style:'margin-top:16px;padding:12px',id:'analysis-reps'}))));
+}
+
+/* ═══════════ UPDATE ═══════════ */
+function update(){
+  const c=calc();
+  const mc=modeColors[S.rentalMode];
+
+  // All slider updates
+  const sls=[
+    ['d-nr','nightlyRate',100,600,'nights'],['d-so','strOccupancy',30,95,'pctInt'],
+    ['d-lr','ltrMonthlyRent',1500,8000,'dollar'],['d-lv','ltrVacancy',0,15,'pctInt'],
+    ['d-mfr','monthlyFairRent',1500,8000,'dollar'],['d-pp','purchasePrice',200000,2000000,'dollar'],
+    ['d-fr','fedRate',10,37,'pctInt'],['d-sr','stateRate',0,13.3,'percent'],
+    ['m-pp','purchasePrice',200000,2000000,'dollar'],['m-mv','marketValue',200000,2000000,'dollar'],
+    ['m-ptr','propTaxRate',1.0,1.5,'percent'],['m-mfr','monthlyFairRent',1500,8000,'dollar'],
+    ['m-vr','vacancyRate',0,15,'pctInt'],['m-moe','monthlyOpEx',100,1500,'dollar'],
+    ['m-ic','interestComp',2.5,8.0,'percent'],['m-ptc','propTaxComp',0.8,1.5,'percent'],
+    ['m-rl','remainingLife',20,80,'years'],['m-ir','improvementRatio',40,90,'pctInt'],
+    ['r-nr','nightlyRate',100,600,'nights'],['r-so','strOccupancy',30,95,'pctInt'],
+    ['r-tr','totRate',10,15,'percent'],['r-sm','strMgmtPct',0,30,'pctInt'],
+    ['r-lr','ltrMonthlyRent',1500,8000,'dollar'],['r-lv','ltrVacancy',0,15,'pctInt'],
+    ['r-lm','ltrMgmtPct',0,15,'pctInt'],
+    ['c-mm','monthlyMortgage',0,10000,'dollar'],['c-mi','monthlyInsurance',100,800,'dollar'],
+    ['c-mu','monthlyUtilities',200,2000,'dollar'],['c-ml','monthlyLawn',0,500,'dollar'],
+    ['c-mp','monthlyPool',0,500,'dollar'],['c-mmt','monthlyMaintenance',0,1000,'dollar'],
+    ['c-fr','fedRate',10,37,'pctInt'],['c-sr','stateRate',0,13.3,'percent']
+  ];
+  sls.forEach(function(s){updateSlider(s[0],s[1],s[2],s[3],s[4]);});
+
+  // Dashboard stats
+  const ds=document.getElementById('dash-stats');
+  if(ds){ds.innerHTML='';
+    ds.append(
+      statCard('Annual Tax Savings',fmtD(c.sav),c.sp.toFixed(0)+'% reduction','gold','§'),
+      statCard('Mills Act Tax',fmtD(c.mat),'was '+fmtD(c.sat),'green','⊘'),
+      statCard('Restricted Value',fmtD(c.ev),'vs '+fmtD(c.av)+' assessed','blue','▽'),
+      S.rentalMode!=="owner"?statCard('Net Revenue',fmtD(c.revNet),c.revLabel,S.rentalMode==="str"?'orange':'blue','$')
+        :statCard('Mode','Owner Occ.','No rental income','neutral','🏠'),
+      statCard('Annual Net',fmtD(c.netPos),c.viable?'Viable':'Operating at a loss',c.viable?'green':'red',c.viable?'✓':'✕'),
+      S.rentalMode==="str"?statCard('Break-Even','$'+c.benr.toFixed(0)+'/nt','at '+S.strOccupancy+'% occ','neutral','⊙')
+        :S.rentalMode==="ltr"?statCard('Break-Even',fmtD(c.benLtr)+'/mo','after vacancy + mgmt','neutral','⊙')
+        :statCard('Monthly Savings',fmtD(c.sav/12),'on cost of living','gold','$'));}
+  const csub=document.getElementById('chart-sub');
+  if(csub)csub.textContent=modeLabels[S.rentalMode]+' mode · Revenue + Mills Act savings − total cost of ownership';
+  renderAreaChart(c);
+
+  // Mills worksheet
+  const mw=document.getElementById('mills-worksheet');
+  if(mw){mw.innerHTML='';mw.append(
+    h('div',{style:'font-size:11px;font-weight:700;color:#D4A054;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'◈ Income Capitalization Worksheet'),
+    infoRow('Gross Annual Income',fmtD(c.gai)),
+    infoRow('Less Vacancy ('+S.vacancyRate+'%)','('+fmtD(c.vd)+')',null,true),
+    infoRow('Less Operating Expenses','('+fmtD(c.aoe)+')',null,true),
+    infoRow('Net Operating Income',fmtD(c.noi),'gold'),
+    h('div',{className:'spacer'}),
+    infoRow('Interest Component',fmtP(S.interestComp),null,true),
+    infoRow('Risk Component',fmtP(c.rc)+(c.rc!==c.riskAuto?' (overridden)':''),null,true),
+    infoRow('Property Tax Component',fmtP(S.propTaxComp),null,true),
+    infoRow('Amortization (1/'+S.remainingLife+' × '+S.improvementRatio+'%)',fmtP(c.ac),null,true),
+    infoRow('Total Capitalization Rate',fmtP(c.tcr),'gold'),
+    h('div',{className:'spacer'}),
+    infoRow('Restricted Value (NOI ÷ Cap Rate)',fmtD(c.rv),'blue'),
+    infoRow('Prop 13 Assessed Value',fmtD(c.av)),
+    infoRow('Enrolled Value (lower of)',fmtD(c.ev),'green'),
+    h('div',{style:'height:12px'}),
+    h('div',{className:'hl-gold'},
+      infoRow('Standard Annual Property Tax',fmtD(c.sat)),
+      infoRow('Mills Act Annual Property Tax',fmtD(c.mat),'green'),
+      infoRow('Annual Savings ('+c.sp.toFixed(0)+'%)',fmtD(c.sav),'gold')));}
+
+  // Revenue breakdown
+  const rb=document.getElementById('rev-breakdown');
+  if(rb){rb.innerHTML='';
+    const clrName=S.rentalMode==='str'?'gold':S.rentalMode==='ltr'?'blue':'green';
+    rb.append(h('div',{style:'font-size:11px;font-weight:700;color:'+mc+';margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},
+      '$ Revenue Breakdown'),modeTag());
+    if(S.rentalMode==="owner"){
+      rb.append(h('div',{style:'padding:20px 0;text-align:center;color:#6B7280;font-size:12px'},'No rental revenue in owner-occupied mode.'),
+        h('div',{className:'hl-green'},infoRow('Annual Mills Act Savings',fmtD(c.sav),'green'),infoRow('Monthly Savings',fmtD(c.sav/12),'green')));
+    } else if(S.rentalMode==="ltr"){
+      rb.append(
+        infoRow('Monthly Rent',fmtD(S.ltrMonthlyRent)),
+        infoRow('Gross Annual Revenue',fmtD(c.revGross),'blue'),
+        infoRow('Less Vacancy ('+S.ltrVacancy+'%)','('+fmtD(c.revGross*S.ltrVacancy/100)+')',null,true),
+        infoRow('Less Management ('+S.ltrMgmtPct+'%)','('+fmtD((c.revGross-c.revGross*S.ltrVacancy/100)*S.ltrMgmtPct/100)+')',null,true),
+        infoRow('Net LTR Revenue',fmtD(c.revNet),'green'),
+        h('div',{style:'height:12px'}),
+        infoRow('Monthly Net',fmtD(c.revNet/12)),
+        h('div',{style:'height:12px'}),
+        h('div',{className:'hl-blue'},
+          infoRow('Break-Even Monthly Rent',fmtD(c.benLtr)+'/mo','blue'),
+          h('div',{className:'note'},'Minimum rent to cover all costs with Mills Act')),
+        h('div',{className:'note',style:'margin-top:12px'},'No TOT applies to rentals of 28+ days. No vacation rental permit required.'));
+    } else {
+      rb.append(
+        infoRow('Rental Nights / Year',c.revNights+' nights'),
+        infoRow('Gross Annual Revenue',fmtD(c.revGross),'gold'),
+        infoRow('Less TOT + TBID ('+S.totRate+'%)','('+fmtD(c.revGross*S.totRate/100)+')',null,true),
+        infoRow('Less Management ('+S.strMgmtPct+'%)','('+fmtD((c.revGross-c.revGross*S.totRate/100)*S.strMgmtPct/100)+')',null,true),
+        infoRow('Net STR Revenue',fmtD(c.revNet),'green'),
+        h('div',{style:'height:12px'}),
+        infoRow('Monthly Net',fmtD(c.revNet/12)),
+        infoRow('Effective Per-Night (net)',c.revNights>0?'$'+(c.revNet/c.revNights).toFixed(0):'—'),
+        h('div',{style:'height:12px'}),
+        h('div',{className:'hl-gold'},
+          infoRow('Break-Even Nightly Rate','$'+c.benr.toFixed(0)+'/night','gold'),
+          h('div',{className:'note'},'At '+S.strOccupancy+'% occupancy to cover all costs')));
+    }
+  }
+
+  // Costs
+  const ct=document.getElementById('cost-tco');
+  if(ct){ct.innerHTML='';ct.append(
+    h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'⚙ Total Cost of Ownership'),modeTag(),
+    infoRow('Mortgage',fmtD(S.monthlyMortgage)),
+    infoRow('Property Tax (Mills Act)',fmtD(c.mpt),null,true),
+    infoRow('Insurance',fmtD(S.monthlyInsurance),null,true),
+    infoRow('Utilities',fmtD(S.monthlyUtilities),null,true),
+    infoRow('Lawn',fmtD(S.monthlyLawn),null,true),
+    infoRow('Pool',fmtD(S.monthlyPool),null,true),
+    infoRow('Maintenance',fmtD(S.monthlyMaintenance),null,true),
+    h('div',{className:'spacer'}),
+    infoRow('Total Monthly Cost',fmtD(c.tmc),'red'),
+    infoRow('Total Annual Cost',fmtD(c.tac),'red'),
+    h('div',{style:'height:12px'}),
+    h('div',{className:'hl-green'},
+      infoRow('Without Mills Act (monthly)',fmtD(c.tmcs)),
+      infoRow('Mills Act Monthly Savings',fmtD((c.tacs-c.tac)/12),'green')));}
+  const cd=document.getElementById('cost-deduction');
+  if(cd){cd.innerHTML='';cd.append(
+    h('div',{style:'font-size:11px;font-weight:700;color:#8B5CF6;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'Tax Deduction Impact'),
+    infoRow('Combined Marginal Rate',fmtP(S.fedRate+S.stateRate)),
+    infoRow('Prop Tax Deduction (Mills)',fmtD(c.tdwm),null,true),
+    infoRow('Net Tax Benefit',fmtD(c.ntb),'green'),
+    h('div',{className:'note'},'Direct savings outweigh the reduced deduction.'));}
+
+  // Analysis
+  const ab=document.getElementById('analysis-banner');
+  if(ab){ab.innerHTML='';
+    const vClr=c.viable?'#10B981':'#EF4444';
+    const banner=h('div',{className:'viability-banner',style:'background:'+(c.viable?'#10B98110':'#EF444410')+';border:1px solid '+(c.viable?'#10B98140':'#EF444440')});
+    banner.append(
+      h('div',{className:'viability-icon',style:'background:'+(c.viable?'#10B98120':'#EF444420')},c.viable?'✓':'✕'),
+      h('div',null,
+        h('div',{className:'viability-title',style:'color:'+vClr},
+          c.viable?modeLabels[S.rentalMode]+' is Viable':modeLabels[S.rentalMode]+' Not Viable at Current Settings'),
+        h('div',{className:'viability-sub'},
+          'Net: '+fmtD(c.netPos)+'/yr · '+modeLabels[S.rentalMode]+' mode · '+fmtP(S.fedRate+S.stateRate)+' marginal rate')));
+    ab.append(banner);}
+
+  const ss=document.getElementById('analysis-ss');
+  if(ss){ss.innerHTML='';
+    ss.append(
+      h('div',{style:'font-size:11px;font-weight:700;color:#D4A054;margin-bottom:12px;letter-spacing:.06em;text-transform:uppercase'},'Sound vs Sassy'),modeTag(),
+      h('div',{className:'ss-grid'},
+        h('div',{className:'ss-card',style:'background:#10B98108;border:1px solid #10B98120'},
+          h('div',{className:'ss-title',style:'color:#10B981'},'🔒 SOUND'),
+          h('div',{className:'ss-body',innerHTML:S.rentalMode==='owner'?
+            'Stay owner-occupied with 4% risk. Apply Mills Act 2027. Savings: <strong style="color:#10B981">'+fmtD(c.sav)+'/yr</strong>':
+            S.rentalMode==='ltr'?
+            'Long-term rental with 2% risk. No permit needed for 28+ days. Report all income on Schedule E. REPS offsets W2. Net: <strong style="color:#10B981">'+fmtD(c.netPos)+'/yr</strong>':
+            'Full STR with 2% risk. Get vacation rental permit (or Junior Permit). Collect TOT. Report all income. Net: <strong style="color:#10B981">'+fmtD(c.netPos)+'/yr</strong>'})),
+        h('div',{className:'ss-card',style:'background:#D4A05408;border:1px solid #D4A05420'},
+          h('div',{className:'ss-title',style:'color:#D4A054'},'💅 SASSY'),
+          h('div',{className:'ss-body',innerHTML:S.rentalMode==='owner'?
+            'You\'re already in the safest position. Nothing sassy about owner-occupied!':
+            S.rentalMode==='ltr'?
+            'Claim owner-occupied (4% risk) while running 28+ day rentals. SBE is ambiguous on part-time occupancy. Extra savings: <strong style="color:#D4A054">~'+fmtD(c.sav*0.17)+'/yr</strong>':
+            'Claim owner-occupied (4% risk) while running STR. No SBE definition on part-time STR. Risk: reclassification. Extra: <strong style="color:#D4A054">~'+fmtD(c.sav*0.17)+'/yr</strong>'}))));
+  }
+
+  const pl=document.getElementById('analysis-pl');
+  if(pl){pl.innerHTML='';
+    var plItems=[
+      h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'Annual P&L'),modeTag()
+    ];
+    if(S.rentalMode!=="owner"){
+      plItems.push(infoRow(S.rentalMode==='str'?'STR Gross Revenue':'LTR Gross Revenue',fmtD(c.revGross)));
+      plItems.push(infoRow('Less Deductions','('+fmtD(c.revDeductions)+')',null,true));
+      plItems.push(infoRow('Net Revenue',fmtD(c.revNet),'green'));
+    }
+    plItems.push(
+      infoRow('Mills Act Tax Savings',fmtD(c.sav),'gold'),
+      h('div',{className:'divider'}),
+      infoRow('Total Annual Income + Savings',fmtD(c.revNet+c.sav),'green'),
+      h('div',{className:'spacer'}),
+      infoRow('Annual Cost of Ownership','('+fmtD(c.tac)+')','red'),
+      h('div',{className:'divider'}),
+      infoRow('NET ANNUAL POSITION',fmtD(c.netPos),c.netPos>=0?'green':'red'),
+      h('div',{className:'spacer'}),
+      infoRow('Without Mills Act',fmtD(c.netWithout)),
+      infoRow('Mills Act Net Advantage',fmtD(c.sav),'gold'));
+    plItems.forEach(function(item){pl.append(item);});}
+
+  renderBarChart(c);
+
+  const am=document.getElementById('analysis-metrics');
+  if(am){am.innerHTML='';
+    var amItems=[
+      h('div',{style:'font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase'},'Key Metrics'),
+      infoRow('Monthly Net Cash Flow',fmtD(c.netPos/12),c.netPos>=0?'green':'red')
+    ];
+    if(S.rentalMode==='str')amItems.push(infoRow('Break-Even Nightly','$'+c.benr.toFixed(0)+'/night','blue'));
+    if(S.rentalMode==='ltr')amItems.push(infoRow('Break-Even Monthly',fmtD(c.benLtr)+'/mo','blue'));
+    amItems.push(
+      infoRow('10-Year Cumulative (Mills)',fmtD(c.yd[9].wm),c.yd[9].wm>=0?'green':'red'),
+      infoRow('10-Year Cumulative (no Mills)',fmtD(c.yd[9].wom)),
+      infoRow('10-Year Tax Savings Total',fmtD(c.yd[9].so),'gold'),
+      h('div',{className:'spacer'}),
+      infoRow('Cancellation Penalty (12.5%)',fmtD(S.marketValue*0.125),'red'),
+      h('div',{className:'note'},'Penalty exceeds savings until year '+(c.sav>0?Math.ceil((S.marketValue*0.125)/c.sav):'∞')+'. Non-renewal avoids penalty.'));
+    amItems.forEach(function(item){am.append(item);});}
+
+  const ar=document.getElementById('analysis-reps');
+  if(ar)ar.innerHTML='<div style="font-size:10px;font-weight:700;color:#8B5CF6;margin-bottom:4px;font-family:Space Mono,monospace">REPS + MILLS ACT STACK</div><div style="font-size:10px;color:#9CA3AF;line-height:1.6">'+(
+    S.rentalMode==='owner'?'In owner-occupied mode, REPS is not applicable (no rental activity). Mills Act savings directly reduce your property tax bill by <strong style="color:#8B5CF6">'+fmtD(c.sav)+'/yr</strong>.':
+    'REPS allows passive rental losses to offset W2 income. Mills Act reduces property tax (a deductible expense), but direct savings far outweigh the lost deduction. Net benefit after REPS interaction: <strong style="color:#8B5CF6">'+fmtD(c.ntb)+'/yr</strong>')+'</div>';
+}
+
+function rebuildAll(){
+  updateModes();
+  buildDashboard();buildMillsAct();buildRevenue();buildCosts();buildAnalysis();
+  update();
+}
+
+/* ═══════════ INIT ═══════════ */
+initModes();
+initTabs();
+buildDashboard();buildMillsAct();buildRevenue();buildCosts();buildAnalysis();
+update();
+</script>
+</body>
+</html>
